@@ -30,13 +30,29 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 .mobile-menu{display:none}.bottomnav{display:none}
 .toast{position:fixed;right:24px;bottom:24px;background:#0f172a;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 35px #0003;z-index:100;display:none;font-size:13px}.toast.show{display:block;animation:fade 1.8s both}@keyframes fade{0%,100%{opacity:0;transform:translateY(8px)}10%,85%{opacity:1;transform:none}}
 .modal{position:fixed;inset:0;background:#0f172a88;display:none;align-items:center;justify-content:center;padding:20px;z-index:80}.modal.open{display:flex}.modalbox{background:#fff;border-radius:20px;width:min(720px,100%);max-height:90vh;overflow:auto;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modalhead h2{margin:0;font-size:18px}
-.overlay{position:fixed;inset:0;background:#f1f5f9;display:none;align-items:center;justify-content:center;z-index:200;padding:20px}.loginbox{width:min(410px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 20px 70px #0002}.loginbox h1{margin:0 0 5px}.loginbox p{color:var(--muted);font-size:12px}.error{color:#b91c1c;font-size:12px;min-height:18px}
+.cloud-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#f8fafc;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;color:#475569}.cloud-pill.online{color:#166534;background:#ecfdf5;border-color:#bbf7d0}.cloud-pill.offline{color:#92400e;background:#fffbeb;border-color:#fde68a}.overlay{position:fixed;inset:0;background:#f1f5f9;display:none;align-items:center;justify-content:center;z-index:200;padding:20px}.loginbox{width:min(410px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 20px 70px #0002}.loginbox h1{margin:0 0 5px}.loginbox p{color:var(--muted);font-size:12px}.error{color:#b91c1c;font-size:12px;min-height:18px}
 @media(max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}.grid2,.cart{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){
  .sidebar{display:none}.main{margin-left:0}.topbar{height:64px;padding:0 15px}.mobile-menu{display:block}.top-actions .btn span{display:none}.content{padding:17px 14px 88px}.pagehead{align-items:flex-start;flex-direction:column}.pagehead h1{font-size:22px}.cards{grid-template-columns:1fr 1fr;gap:10px}.statcard{padding:14px}.statcard .value{font-size:20px}.grid3,.formgrid,.formgrid.three{grid-template-columns:1fr}.panel{padding:14px}.bottomnav{position:fixed;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:30;padding-bottom:env(safe-area-inset-bottom)}.bottomnav button{border:0;background:#fff;color:#64748b;font-size:10px;font-weight:700}.bottomnav button b{display:block;font-size:19px;margin-bottom:2px}.bottomnav button.active{color:#0f172a}.head-actions{width:100%}.head-actions .btn{flex:1}.toolbar{align-items:stretch;flex-direction:column}.searchbox{max-width:none}.cartline{grid-template-columns:1fr 70px 85px 85px 36px}.cartline .field:nth-child(1){grid-column:1/-1}.toast{right:14px;left:14px;bottom:82px;text-align:center}.top-title small{display:none}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+<div class="overlay" id="authOverlay">
+  <div class="loginbox">
+    <div style="font-size:42px">🏍️</div>
+    <h1>BikePro ERP</h1>
+    <p id="authModeText">Sign in to your cloud database</p>
+    <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="owner@example.com"></div>
+    <div class="field" style="margin-top:10px"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 characters"></div>
+    <div class="field" id="shopField" style="margin-top:10px;display:none"><label>Shop Name</label><input id="authShop" placeholder="BikePro Accessories & Workshop"></div>
+    <div class="error" id="authError"></div>
+    <button class="btn primary" id="authBtn" style="width:100%;margin-top:5px" onclick="authSubmit()">Sign In</button>
+    <button class="btn" id="authToggle" style="width:100%;margin-top:8px" onclick="toggleAuth()">Create account</button>
+    <button class="btn" style="width:100%;margin-top:8px" onclick="useOffline()">Continue Offline</button>
+    <small style="display:block;color:#94a3b8;margin-top:12px;text-align:center">Cloud data is stored in your Supabase project and separated by shop.</small>
+  </div>
+</div>
 <div class="app">
 <aside class="sidebar">
   <div class="logo"><div class="logo-icon">🏍️</div><div><b>BikePro ERP</b><small>Accessories & Workshop</small></div></div>
@@ -52,13 +68,13 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
     <button class="navbtn" data-page="reports"><span class="ico">📊</span>Reports</button>
     <button class="navbtn" data-page="settings"><span class="ico">⚙️</span>Settings</button>
   </div>
-  <div class="sidebar-footer">Local database • Backup supported<br>Built for mobile + desktop</div>
+  <div class="sidebar-footer">Supabase Cloud • Offline fallback<br>Mobile + Desktop Ready</div>
 </aside>
 
 <main class="main">
 <header class="topbar">
   <div class="top-title"><b id="topTitle">Dashboard</b><small id="todayLabel"></small></div>
-  <div class="top-actions"><button class="btn sm" onclick="newSale()">＋ New Sale</button><button class="btn sm" onclick="openRepair()">🔧 New Repair</button></div>
+  <div class="top-actions"><button id="cloudStatus" class="cloud-pill offline" onclick="openAuth()">● Sign in for Cloud</button><button class="btn sm" id="cloudSignOut" style="display:none" onclick="signOut()">↪ <span>Sign out</span></button><button class="btn sm" onclick="newSale()">＋ New Sale</button><button class="btn sm" onclick="openRepair()">🔧 New Repair</button></div>
 </header>
 
 <div class="content">
@@ -207,10 +223,75 @@ let db=loadDB(), cart=[], currentPage='dashboard';
 
 function loadDB(){try{const x=JSON.parse(localStorage.getItem(KEY));return x?mergeDB(x):structuredClone(defaultDB)}catch(e){return structuredClone(defaultDB)}}
 function mergeDB(x){const d=structuredClone(defaultDB);return {...d,...x,settings:{...d.settings,...(x.settings||{})},counters:{...d.counters,...(x.counters||{})},customers:x.customers||d.customers,products:x.products||d.products,suppliers:x.suppliers||[],sales:x.sales||[],purchases:x.purchases||[],payments:x.payments||[],repairs:x.repairs||[]}}
-function persist(){localStorage.setItem(KEY,JSON.stringify(db));refresh()}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));refresh();queueCloudSave()}
 function money(n){return (db.settings.currency||'Rs')+' '+Number(n||0).toLocaleString('en-PK',{maximumFractionDigits:0})}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function uid(){return Date.now()+Math.floor(Math.random()*1000)}
+
+// ===== Supabase Cloud =====
+const SUPABASE_URL='https://vchkrwadfykredtcsxrb.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
+let supa=null, cloudUser=null, cloudTimer=null, authSignup=false, cloudLoading=false;
+function cloudConfigured(){return !!(window.supabase&&SUPABASE_URL&&SUPABASE_ANON_KEY)}
+function setCloudStatus(state,text){const e=document.getElementById('cloudStatus');if(!e)return;e.className='cloud-pill '+(state==='online'?'online':state==='loading'?'':'offline');e.textContent=state==='online'?'● '+text:state==='loading'?'● '+text:'● '+text}
+function openAuth(){document.getElementById('authOverlay').style.display='flex';document.getElementById('authError').textContent='';setTimeout(()=>document.getElementById('authEmail').focus(),50)}
+function closeAuth(){document.getElementById('authOverlay').style.display='none'}
+function useOffline(){cloudUser=null;setCloudStatus('offline','Offline Mode');closeAuth();toast('Offline mode enabled')}
+function toggleAuth(){authSignup=!authSignup;document.getElementById('authModeText').textContent=authSignup?'Create your shop cloud account':'Sign in to your cloud database';document.getElementById('shopField').style.display=authSignup?'block':'none';document.getElementById('authBtn').textContent=authSignup?'Create Account':'Sign In';document.getElementById('authToggle').textContent=authSignup?'Already have an account':'Create account';document.getElementById('authError').textContent=''}
+async function initCloud(){
+ if(!cloudConfigured()){setCloudStatus('offline','Offline Mode');return}
+ try{
+  supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  const {data,error}=await supa.auth.getSession();
+  if(error)throw error;
+  if(data.session) await enterCloud(data.session.user); else setCloudStatus('offline','Sign in for Cloud');
+  supa.auth.onAuthStateChange((_event,session)=>{setTimeout(()=>{if(session)enterCloud(session.user);else{cloudUser=null;document.getElementById('cloudSignOut').style.display='none';setCloudStatus('offline','Sign in for Cloud')}},0)});
+ }catch(e){console.error(e);setCloudStatus('offline','Cloud unavailable')}
+}
+async function authSubmit(){
+ const err=document.getElementById('authError');err.style.color='#b91c1c';err.textContent='';
+ if(!supa){err.textContent='Cloud service is not available. Check your internet connection.';return}
+ const email=document.getElementById('authEmail').value.trim(), password=document.getElementById('authPassword').value;
+ if(!email||password.length<6){err.textContent='Enter a valid email and password of at least 6 characters.';return}
+ const btn=document.getElementById('authBtn');btn.disabled=true;btn.textContent=authSignup?'Creating...':'Signing in...';setCloudStatus('loading','Connecting...');
+ try{
+  if(authSignup){
+   const shop=(document.getElementById('authShop').value.trim()||'BikePro Accessories & Workshop');
+   const {data,error}=await supa.auth.signUp({email,password});
+   if(error)throw error;
+   if(data.session){await enterCloud(data.user,shop);err.style.color='#166534';err.textContent='Account created and cloud connected.'}
+   else{err.style.color='#166534';err.textContent='Account created. Check your email, confirm it, then sign in.';setCloudStatus('offline','Check email to continue');}
+  }else{
+   const {data,error}=await supa.auth.signInWithPassword({email,password});
+   if(error)throw error;
+   await enterCloud(data.user);
+  }
+ }catch(e){console.error(e);setCloudStatus('offline','Sign in failed');err.textContent=e?.message||'Unable to sign in.'}
+ finally{btn.disabled=false;btn.textContent=authSignup?'Create Account':'Sign In'}
+}
+async function enterCloud(user,requestedShopName){
+ if(cloudUser?.id===user.id && !cloudLoading && document.getElementById('cloudSignOut').style.display!=='none')return;
+ cloudUser=user;cloudLoading=true;setCloudStatus('loading','Loading cloud data...');
+ try{
+  const {data,rowError}=await getCloudRow();
+  if(rowError)throw rowError;
+  if(data&&data.payload){db=mergeDB(data.payload);localStorage.setItem(KEY,JSON.stringify(db));if(data.shop_name)db.settings.shopName=data.shop_name;refresh();}
+  else {await saveCloudNow(requestedShopName||db.settings.shopName||'BikePro Accessories & Workshop');}
+  document.getElementById('cloudSignOut').style.display='inline-flex';closeAuth();setCloudStatus('online',db.settings.shopName||user.email);toast('Cloud connected successfully');
+ }catch(e){console.error(e);cloudUser=null;setCloudStatus('offline','Cloud error');document.getElementById('authError').textContent='Database setup required: '+(e?.message||'check Supabase SQL/RLS policies.');document.getElementById('authOverlay').style.display='flex'}
+ finally{cloudLoading=false}
+}
+async function getCloudRow(){const r=await supa.from('bikepro_data').select('user_id,shop_name,payload').eq('user_id',cloudUser.id).maybeSingle();return {data:r.data,rowError:r.error}}
+function queueCloudSave(){if(!cloudUser||cloudLoading||!supa)return;clearTimeout(cloudTimer);cloudTimer=setTimeout(()=>saveCloudNow(),700)}
+async function saveCloudNow(shopName){
+ if(!cloudUser||!supa)return false;
+ try{
+  const payload=structuredClone(db);const name=shopName||payload.settings.shopName||'BikePro Accessories & Workshop';
+  const {error}=await supa.from('bikepro_data').upsert({user_id:cloudUser.id,shop_name:name,payload,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  if(error)throw error;setCloudStatus('online',name);return true
+ }catch(e){console.error(e);setCloudStatus('offline','Cloud sync failed');toast('Cloud sync failed — local data is safe');return false}
+}
+async function signOut(){if(supa)await supa.auth.signOut();cloudUser=null;document.getElementById('cloudSignOut').style.display='none';setCloudStatus('offline','Sign in for Cloud');toast('Signed out — offline mode')}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.remove('show');void e.offsetWidth;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
 function go(id){currentPage=id;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));const names={dashboard:'Dashboard',sales:'Sales & Invoices',purchases:'Purchases',products:'Products & Stock',customers:'Customers',repairs:'Mechanic / Repairs',suppliers:'Suppliers',ledger:'Ledgers',reports:'Reports',settings:'Settings'};document.getElementById('topTitle').textContent=names[id]||id;refresh()}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
@@ -238,7 +319,7 @@ function renderDashboard(){
  const today=new Date().toDateString(), sales=db.sales.filter(x=>new Date(x.date).toDateString()===today), total=sales.reduce((a,x)=>a+x.total,0);
  const receivable=db.customers.reduce((a,c)=>a+customerBalance(c.id),0), stock=db.products.reduce((a,p)=>a+p.stock,0), stockVal=db.products.reduce((a,p)=>a+p.stock*p.cost,0), active=db.repairs.filter(x=>x.status!=='Delivered').length, ready=db.repairs.filter(x=>x.status==='Ready').length;
  dSales.textContent=money(total);dSalesCount.textContent=sales.length+' invoice'+(sales.length===1?'':'s');dReceivable.textContent=money(receivable);dStock.textContent=money(stockVal);dStockCount.textContent=stock+' units';dRepairs.textContent=active;dRepairSub.textContent=ready+' ready';
- const allSales=db.sales.reduce((a,x)=>a+x.total,0),profit=db.sales.reduce((a,x)=>a+(x.rate-(x.cost||0))*x.qty-x.discount,0);
+ const allSales=db.sales.reduce((a,x)=>a+x.total,0),profit=db.sales.reduce((a,s)=>a+(s.items||[]).reduce((z,i)=>z+(i.rate-(i.cost||0))*i.qty-(i.discount||0),0),0);
  snapSales.textContent=money(allSales);snapProfit.textContent=money(profit);snapCustomers.textContent=db.customers.length;snapSuppliers.textContent=db.suppliers.length;
  recentSales.innerHTML=db.sales.slice(0,6).map(x=>{const c=db.customers.find(c=>c.id==x.customerId)?.name||'Customer';return `<div class="listitem"><strong>${esc(x.invoice)} · ${esc(c)} <span style="float:right">${money(x.total)}</span></strong><small>${new Date(x.date).toLocaleString()} · Balance ${money(x.balance)} <button class="btn sm" style="float:right;margin-top:-4px" onclick="printInvoice(${x.id})">Print</button></small></div>`}).join('')||'<div class="empty">No sales yet.</div>';
  const lows=db.products.filter(p=>p.stock<=p.minStock);lowStock.innerHTML=lows.map(p=>`<div class="listitem"><strong>${esc(p.name)} <span class="badge red" style="float:right">${p.stock} left</span></strong><small>${esc(p.brand||p.category)} · Reorder at ${p.minStock}</small></div>`).join('')||'<div class="empty">All stock levels are healthy.</div>';
@@ -327,11 +408,20 @@ function exportBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'a
 function restoreBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{db=mergeDB(JSON.parse(r.result));persist();toast('Backup restored')}catch(err){toast('Invalid backup file')}};r.readAsText(f);e.target.value=''}
 function resetDemo(){if(!confirm('Reset this browser database to the demo data?'))return;db=structuredClone(defaultDB);persist();toast('Demo data restored')}
 function addPayment(customerId){const amount=+prompt('Payment amount:','0');if(!amount||amount<0)return;db.payments.unshift({id:uid(),date:new Date().toISOString(),customerId,amount});persist();toast('Payment recorded')}
-function printWindow(title,body){const w=window.open('','_blank');if(!w)return;w.document.write(`<!doctype html><html><head><title>${esc(title)}</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:30px auto;color:#111}h1{margin:0 0 4px}small{color:#666}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}.right{text-align:right}.total{font-weight:700;font-size:16px}.head{display:flex;justify-content:space-between}.footer{margin-top:35px;color:#666;font-size:12px}</style></head><body>${body}<script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
+function printWindow(title,body){
+ const w=window.open('','_blank');
+ if(!w){toast('Please allow pop-ups to print');return}
+ const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:30px auto;color:#111;padding:20px}h1{margin:0 0 4px}small{color:#666}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}.right{text-align:right}.total{font-weight:700;font-size:16px}.head{display:flex;justify-content:space-between;gap:20px}.footer{margin-top:35px;color:#666;font-size:12px}@media print{body{margin:0;max-width:none;padding:10mm}}</style></head><body>${body}</body></html>`;
+ w.document.open();
+ w.document.write(html);
+ w.document.close();
+ setTimeout(()=>{try{w.focus();w.print()}catch(e){}},250);
+}
 function printInvoice(id){const x=typeof id==='object'?id:db.sales.find(s=>s.id==id);if(!x)return;const c=db.customers.find(c=>c.id==x.customerId)?.name||'';const items=x.items.map(i=>{const p=db.products.find(p=>p.id==i.productId);return `<tr><td>${esc(p?.name||'')}</td><td>${i.qty}</td><td>${money(i.rate)}</td><td>${money(i.qty*i.rate-i.discount)}</td></tr>`}).join('');printWindow(x.invoice,`<div class="head"><div><h1>${esc(db.settings.shopName)}</h1><small>${esc(db.settings.phone||'')}</small></div><div><b>Invoice ${esc(x.invoice)}</b><br><small>${new Date(x.date).toLocaleString()}</small></div></div><p>Customer: <b>${esc(c)}</b></p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr>${items}</table><p class="right">Grand Total: <b>${money(x.total)}</b><br>Paid: ${money(x.paid)}<br>Balance: ${money(x.balance)}</p><div class="footer">${esc(db.settings.invoiceFooter||'')}</div>`)}
 function printPurchase(id){const x=db.purchases.find(p=>p.id==id);if(!x)return;const p=db.products.find(p=>p.id==x.productId);printWindow(x.invoice,`<h1>${esc(db.settings.shopName)}</h1><p><b>Purchase ${x.invoice}</b><br>Supplier: ${esc(x.supplier)}<br>Date: ${new Date(x.date).toLocaleString()}</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${esc(p?.name||'')}</td><td>${x.qty}</td><td>${money(x.rate)}</td><td>${money(x.total)}</td></tr></table><p class="right">Paid: ${money(x.paid)}<br>Balance: ${money(x.balance)}</p>`)}
 function printRepair(id){const r=db.repairs.find(x=>x.id==id);if(!r)return;const c=db.customers.find(c=>c.id==r.customerId)?.name||'';printWindow(r.job,`<h1>${esc(db.settings.shopName)}</h1><p><b>Repair Job ${r.job}</b><br>Customer: ${esc(c)}<br>Bike: ${esc(r.bike)} ${r.plate?'· '+esc(r.plate):''}<br>Mechanic: ${esc(r.mechanic||'—')}<br>Status: ${esc(r.status)}<br>Date: ${new Date(r.date).toLocaleString()}</p><table><tr><th>Complaint</th><th>Diagnosis</th></tr><tr><td>${esc(r.complaint||'')}</td><td>${esc(r.diagnosis||'')}</td></tr></table><p>Parts: ${esc(r.parts||'—')}<br>Parts Cost: ${money(r.partsCost)}<br>Labor: ${money(r.labor)}<br><b>Total: ${money(r.partsCost+r.labor)}</b></p><div class="footer">${esc(r.notes||'')}</div>`)}
 refresh();
+window.addEventListener('load',initCloud);
 </script>
 </body>
 </html>
