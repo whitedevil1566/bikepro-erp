@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BikePro ERP</title>
@@ -19,16 +19,31 @@ input,select{width:100%;padding:13px;border:1px solid #dce1e8;border-radius:11px
 .bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:#fff;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(6,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}.nav{background:none;color:#6b7280;padding:7px 2px;font-size:11px}.nav.active{color:#111827}.nav span{display:block;font-size:19px;margin-bottom:2px}
 table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}td,th{padding:10px;border-bottom:1px solid #edf0f3;text-align:left;font-size:12px}th{background:#f8fafc}
 .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;display:none;z-index:10;font-size:13px}
+
+<style>
+.auth-overlay{position:fixed;inset:0;background:#f4f6f8;display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.auth-box{width:min(420px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 15px 50px #0002}
+.auth-box h1{margin:0 0 5px}.auth-box p{color:#6b7280;font-size:13px}.auth-error{color:#b91c1c;font-size:12px;margin:6px 0;min-height:18px}
+.userbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#fff;border-bottom:1px solid #eee;font-size:12px}
 </style>
 </head>
 <body>
 
-<style>
-#authOverlay{position:fixed;inset:0;background:#f4f6f8;display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-.authbox{width:min(420px,100%);background:#fff;border-radius:22px;padding:25px;box-shadow:0 18px 60px #0002}.authbox h1{margin:0}.authbox p{color:#6b7280;font-size:13px}.autherr{min-height:18px;color:#b91c1c;font-size:12px;margin:5px 0}.cloudbar{display:none;background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 14px;align-items:center;justify-content:space-between;font-size:12px}.cloudbar button{padding:7px 10px}
-</style>
-<div id="authOverlay"><div class="authbox"><h1>🏍️ BikePro ERP</h1><p id="authHint">Sign in to access your shop from any phone or computer.</p><input id="authEmail" type="email" placeholder="Email"><input id="authPassword" type="password" placeholder="Password"><input id="authShopName" placeholder="Shop name (new account)" style="display:none"><div class="autherr" id="authErr"></div><button class="primary" id="authMain" style="width:100%" onclick="authSubmit()">Sign In</button><button class="secondary" id="authSwitch" style="width:100%;margin-top:8px" onclick="toggleAuthMode()">Create account</button></div></div>
-<div class="cloudbar" id="cloudbar"><span id="cloudUser"></span><button class="secondary" onclick="cloudSignOut()">Sign out</button></div>
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-box">
+    <h1>🏍️ BikePro ERP</h1>
+    <p id="authModeText">Sign in to your shop</p>
+    <input id="authEmail" type="email" placeholder="Email">
+    <input id="authPassword" type="password" placeholder="Password">
+    <input id="authShop" placeholder="Shop name (for new account)" style="display:none">
+    <div class="auth-error" id="authError"></div>
+    <button class="primary" style="width:100%" onclick="authSubmit()" id="authBtn">Sign In</button>
+    <button class="secondary" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="authToggle">Create account</button>
+  </div>
+</div>
+<div class="userbar" id="userbar" style="display:none">
+  <span id="userEmail"></span><button class="secondary" onclick="signOut()">Sign out</button>
+</div>
 <div class="app">
 <header>
   <div class="brand">🏍️ BikePro ERP</div><div class="sub">Bike Accessories • Mobile Shop Management</div>
@@ -172,7 +187,7 @@ function refresh(){
 function fillRate(){let p=db.products.find(x=>x.id==document.getElementById('saleProduct')?.value);if(p){document.getElementById('rate').value=p.rate;calc()}}
 function calc(){let q=+qty.value||0,r=+rate.value||0,d=+discount.value||0,p=+paid.value||0,t=Math.max(0,q*r-d);saleTotal.textContent=money(t);saleBalance.textContent=money(Math.max(0,t-p))}
 function saveSale(){
- let c=saleCustomer.value,pid=saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0;
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0;
  let p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
  if(!p||q<1||q>p.stock)return toast('Check product/quantity');
  let invoice='INV-'+db.settings.nextSale++;
@@ -194,111 +209,243 @@ function addSupplier(){
 function printInvoice(x){
  let c=db.customers.find(c=>c.id==x.customerId)?.name||'',p=db.products.find(p=>p.id==x.productId)?.name||'';
  let w=window.open('','_blank'); if(!w)return;
- w.document.write(`<html><head><title>${x.invoice}</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}h1{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}.tot{text-align:right;font-weight:bold}</style></head><body><h1>BikePro Accessories</h1><div>Invoice: <b>${x.invoice}</b></div><div>Customer: ${c}</div><div>Date: ${new Date(x.date).toLocaleString()}</div><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${p}</td><td>${x.qty}</td><td>Rs ${x.rate.toLocaleString()}</td><td>Rs ${x.total.toLocaleString()}</td></tr></table><p class="tot">Discount: Rs ${x.discount.toLocaleString()}</p><p class="tot">Grand Total: Rs ${x.total.toLocaleString()}</p><p class="tot">Paid: Rs ${x.paid.toLocaleString()}</p><p class="tot">Balance: Rs ${x.balance.toLocaleString()}</p><script>window.print()</script>
+ w.document.write(`<html><head><title>${x.invoice}</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}h1{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{border-bottom:1px solid #ddd;padding:10px;text-align:left}.tot{text-align:right;font-weight:bold}</style></head><body><h1>BikePro Accessories</h1><div>Invoice: <b>${x.invoice}</b></div><div>Customer: ${c}</div><div>Date: ${new Date(x.date).toLocaleString()}</div><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${p}</td><td>${x.qty}</td><td>Rs ${x.rate.toLocaleString()}</td><td>Rs ${x.total.toLocaleString()}</td></tr></table><p class="tot">Discount: Rs ${x.discount.toLocaleString()}</p><p class="tot">Grand Total: Rs ${x.total.toLocaleString()}</p><p class="tot">Paid: Rs ${x.paid.toLocaleString()}</p><p class="tot">Balance: Rs ${x.balance.toLocaleString()}</p><scr"+"ipt>window.print()<\/scr"+"ipt>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://vchkrwadfykredtcsxrb.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
-const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let cloudUser=null, shopId=null, signupMode=false;
-const cloudDB=()=>true;
-function setErr(t,ok=false){authErr.textContent=t;authErr.style.color=ok?'#166534':'#b91c1c'}
-function toggleAuthMode(){signupMode=!signupMode;authHint.textContent=signupMode?'Create your owner account.':'Sign in to your shop from any phone or computer.';authShopName.style.display=signupMode?'block':'none';authMain.textContent=signupMode?'Create Account':'Sign In';authSwitch.textContent=signupMode?'Already have an account':'Create account';setErr('')}
+const SUPABASE_URL = 'https://vchkrwadfykredtcsxrb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
+let supa = null, authSignup=false, currentUser=null, shopId=null;
+
+function cloudReady(){return SUPABASE_URL.startsWith('http') && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')}
+
+async function initCloud(){
+ if(!cloudReady()){ document.getElementById('authOverlay').style.display='none'; return; }
+ supa=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data}=await supa.auth.getSession();
+ if(data.session) await enterCloud(data.session.user); else document.getElementById('authOverlay').style.display='flex';
+ supa.auth.onAuthStateChange(async (_e,session)=>{ if(session) await enterCloud(session.user); });
+}
+function toggleAuth(){
+ authSignup=!authSignup;
+ authModeText.textContent=authSignup?'Create your shop owner account':'Sign in to your shop';
+ authShop.style.display=authSignup?'block':'none';
+ authBtn.textContent=authSignup?'Create Account':'Sign In';
+ authToggle.textContent=authSignup?'Already have an account':'Create account';
+ authError.textContent='';
+}
 async function authSubmit(){
- setErr('');const email=authEmail.value.trim(),password=authPassword.value;if(!email||password.length<6){setErr('Enter email and a password of at least 6 characters.');return}
- authMain.disabled=true;
- try{
-  if(signupMode){localStorage.setItem('bikepro_pending_shop',authShopName.value.trim()||'My Bike Shop');const {data,error}=await supa.auth.signUp({email,password});if(error)throw error;if(data.session){await ensureProfile(data.user)}else{setErr('Account created. Check your email, then sign in.',true);toggleAuthMode()}}
-  else{const {data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;await enterCloud(data.user)}
- }catch(e){setErr(e.message||'Login failed')}finally{authMain.disabled=false}
+ authError.textContent='';
+ if(!supa){authError.textContent='Cloud is not configured yet. Add Supabase URL/key in this file.';return;}
+ let email=authEmail.value.trim(),pw=authPassword.value;
+ if(!email||pw.length<6){authError.textContent='Enter email and a password of at least 6 characters.';return;}
+ if(authSignup){
+   let {data,error}=await supa.auth.signUp({email,password:pw});
+   if(error){authError.textContent=error.message;return;}
+   if(data.user){
+     let shop=(authShop.value.trim()||'My Bike Shop');
+     let {data:sh,error:se}=await supa.from('shops').insert({name:shop,owner_id:data.user.id}).select().single();
+     if(se){authError.textContent=se.message;return;}
+     shopId=sh.id; await supa.from('profiles').upsert({id:data.user.id,shop_id:shopId,role:'owner'});
+     authError.style.color='#166534';authError.textContent='Account created. Check email if confirmation is enabled.';
+   }
+ } else {
+   let {data,error}=await supa.auth.signInWithPassword({email,password:pw});
+   if(error)authError.textContent=error.message; else if(data.session)await enterCloud(data.session.user);
+ }
 }
-async function ensureProfile(user){
- let {data:p,error}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).maybeSingle();if(error)throw error;
- if(!p){let name=localStorage.getItem('bikepro_pending_shop')||'My Bike Shop';let {data:sh,error:se}=await supa.from('shops').insert({name,owner_id:user.id}).select('id').single();if(se)throw se;let {error:pe}=await supa.from('profiles').insert({id:user.id,shop_id:sh.id,role:'owner'});if(pe)throw pe;p={shop_id:sh.id,role:'owner'};localStorage.removeItem('bikepro_pending_shop')}
- shopId=p.shop_id;return p;
+async function enterCloud(user){
+ currentUser=user;
+ let {data:profile}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).single();
+ if(!profile){document.getElementById('authError').textContent='Profile not found. Run the supplied SQL setup first.';return;}
+ shopId=profile.shop_id;
+ authOverlay.style.display='none';userbar.style.display='flex';userEmail.textContent=user.email+' • '+profile.role;
+ await loadCloud();
 }
-async function enterCloud(user){cloudUser=user;let p=await ensureProfile(user);cloudbar.style.display='flex';cloudUser.textContent=user.email+' • '+p.role;authOverlay.style.display='none';await loadCloud()}
-async function cloudSignOut(){await supa.auth.signOut();location.reload()}
+async function signOut(){if(supa)await supa.auth.signOut();location.reload()}
+
 async function loadCloud(){
- const [cs,ps,ss,pm,pu]=await Promise.all([
-  supa.from('customers').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('products').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('sales').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('payments').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('purchases').select('*').eq('shop_id',shopId).order('created_at',{ascending:false})
+ let [cs,ps,ss,pays,purs]=await Promise.all([
+  supa.from('customers').select('*').order('created_at'),
+  supa.from('products').select('*').order('created_at'),
+  supa.from('sales').select('*').order('created_at',{ascending:false}),
+  supa.from('payments').select('*').order('created_at',{ascending:false}),
+  supa.from('purchases').select('*').order('created_at',{ascending:false})
  ]);
- for(const x of [cs,ps,ss,pm,pu])if(x.error)throw x.error;
  db.customers=(cs.data||[]).map(x=>({id:x.id,name:x.name,phone:x.phone||''}));
  db.products=(ps.data||[]).map(x=>({id:x.id,name:x.name,cat:x.category||'General',brand:x.brand||'',cost:Number(x.cost||0),rate:Number(x.sale_price||0),stock:Number(x.stock||0)}));
- db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.payments=(pm.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
- db.purchases=(pu.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.suppliers=[...new Set(db.purchases.map(x=>x.supplier))].map((name,i)=>({id:i,name}));refresh()
+ db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:x.qty,rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ db.payments=(pays.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
+ db.purchases=(purs.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:x.qty,rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ refresh();
 }
-async function cloudInsert(table,row){let {error}=await supa.from(table).insert(row);if(error){toast(error.message);return false}return true}
-async function cloudCustomer(){let n=custName.value.trim();if(!n)return toast('Enter customer name');if(await cloudInsert('customers',{shop_id:shopId,name:n,phone:custPhone.value||''})){custName.value='';custPhone.value='';await loadCloud();toast('Customer saved to cloud')}}
-async function cloudProduct(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');if(await cloudInsert('products',{shop_id:shopId,name:n,category:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,sale_price:r,stock:s})){prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';await loadCloud();toast('Product saved to cloud')}}
-async function cloudSale(){let c=saleCustomer.value,pid=saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,pay=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);if(!p||q<1||q>p.stock)return toast('Check product/quantity');let x={invoice_no:'INV-'+Date.now(),shop_id:shopId,customer_id:c,product_id:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(pay,t),balance:Math.max(0,t-pay)};if(await cloudInsert('sales',x)){let {error}=await supa.from('products').update({stock:p.stock-q}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved');show('dashboard')}}
-async function cloudPayment(){let c=payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');if(await cloudInsert('payments',{shop_id:shopId,customer_id:c,amount:a})){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}
-async function cloudPurchase(){let pid=purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,pay=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');let total=q*r,x={invoice_no:'PUR-'+Date.now(),shop_id:shopId,supplier:sn,product_id:pid,qty:q,rate:r,total,paid:Math.min(pay,total),balance:Math.max(0,total-pay)};if(await cloudInsert('purchases',x)){let {error}=await supa.from('products').update({stock:p.stock+q,cost:r}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved')}}
-// Replace local mutations with cloud mutations.
-addCustomer=cloudCustomer;addProduct=cloudProduct;saveSale=cloudSale;savePayment=cloudPayment;savePurchase=cloudPurchase;
-window.addEventListener('load',async()=>{try{const {data}=await supa.auth.getSession();if(data.session)await enterCloud(data.session.user);else authOverlay.style.display='flex';supa.auth.onAuthStateChange(async(_e,session)=>{if(session&&!cloudUser)await enterCloud(session.user)})}catch(e){setErr(e.message||'Cloud connection failed')}});
+
+async function cloudSaveCustomer(obj){
+ let {error}=await supa.from('customers').insert({shop_id:shopId,name:obj.name,phone:obj.phone||''});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveProduct(obj){
+ let {error}=await supa.from('products').insert({shop_id:shopId,name:obj.name,category:obj.cat,brand:obj.brand,cost:obj.cost,sale_price:obj.rate,stock:obj.stock});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveSale(x,p){
+ let {error}=await supa.from('sales').insert({shop_id:shopId,invoice_no:x.invoice,customer_id:x.customerId,product_id:x.productId,qty:x.qty,rate:x.rate,cost:x.cost,discount:x.discount,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false}
+ return true;
+}
+async function cloudSavePayment(x){
+ let {error}=await supa.from('payments').insert({shop_id:shopId,customer_id:x.customerId,amount:x.amount});
+ if(error){toast(error.message);return false} return true;
+}
+async function cloudSavePurchase(x,p){
+ let {error}=await supa.from('purchases').insert({shop_id:shopId,invoice_no:x.invoice,supplier:x.supplier,product_id:x.productId,qty:x.qty,rate:x.rate,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock,cost:p.cost}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false} return true;
+}
+</script>
+
+<script>
+const localAddCustomer=addCustomer, localAddProduct=addProduct, localSaveSale=saveSale, localSavePayment=savePayment, localSavePurchase=savePurchase;
+addCustomer=async function(){let n=custName.value.trim();if(!n)return toast('Enter customer name');let o={name:n,phone:custPhone.value};if(cloudReady()&&supa&&shopId){await cloudSaveCustomer(o);custName.value='';custPhone.value='';toast('Customer saved to cloud')}else localAddCustomer();}
+addProduct=async function(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');let o={name:n,cat:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,rate:r,stock:s};if(cloudReady()&&supa&&shopId){await cloudSaveProduct(o);prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';toast('Product saved to cloud')}else localAddProduct();}
+saveSale=async function(){
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
+ if(!p||q<1||q>p.stock)return toast('Check product/quantity');
+ let invoice='INV-'+(db.sales.length+1001),x={id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)};
+ p.stock-=q;
+ if(cloudReady()&&supa&&shopId){if(await cloudSaveSale(x,p)){await loadCloud();toast(invoice+' saved to cloud');printInvoice(x);show('dashboard')}}else localSaveSale();
+}
+savePayment=async function(){let c=+payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');let x={customerId:c,amount:a};if(cloudReady()&&supa&&shopId){if(await cloudSavePayment(x)){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}else localSavePayment();}
+savePurchase=async function(){
+ let pid=+purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,paidv=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();
+ if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');
+ let x={id:Date.now(),invoice:'PUR-'+(db.purchases.length+5001),date:new Date().toISOString(),supplier:sn,productId:pid,qty:q,rate:r,total:q*r,paid:Math.min(paidv,q*r),balance:Math.max(0,q*r-paidv)};p.stock+=q;p.cost=r;
+ if(cloudReady()&&supa&&shopId){if(await cloudSavePurchase(x,p)){await loadCloud();toast(x.invoice+' saved to cloud');printPurchase(x)}}else localSavePurchase();
+}
+window.addEventListener('load',initCloud);
 </script>
 </body></html>`);w.document.close();
 }
 function printPurchase(x){
  let p=db.products.find(p=>p.id==x.productId)?.name||'',w=window.open('','_blank');if(!w)return;
- w.document.write(`<html><head><title>${x.invoice}</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd}</style></head><body><h1>BikePro Accessories - Purchase</h1><p>Invoice: <b>${x.invoice}</b><br>Supplier: ${x.supplier}<br>Date: ${new Date(x.date).toLocaleString()}</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${p}</td><td>${x.qty}</td><td>Rs ${x.rate.toLocaleString()}</td><td>Rs ${x.total.toLocaleString()}</td></tr></table><p>Paid: Rs ${x.paid.toLocaleString()}</p><p>Balance: Rs ${x.balance.toLocaleString()}</p><script>window.print()</script>
+ w.document.write(`<html><head><title>${x.invoice}</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd}</style></head><body><h1>BikePro Accessories - Purchase</h1><p>Invoice: <b>${x.invoice}</b><br>Supplier: ${x.supplier}<br>Date: ${new Date(x.date).toLocaleString()}</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${p}</td><td>${x.qty}</td><td>Rs ${x.rate.toLocaleString()}</td><td>Rs ${x.total.toLocaleString()}</td></tr></table><p>Paid: Rs ${x.paid.toLocaleString()}</p><p>Balance: Rs ${x.balance.toLocaleString()}</p><scr"+"ipt>window.print()<\/scr"+"ipt>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://vchkrwadfykredtcsxrb.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
-const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let cloudUser=null, shopId=null, signupMode=false;
-const cloudDB=()=>true;
-function setErr(t,ok=false){authErr.textContent=t;authErr.style.color=ok?'#166534':'#b91c1c'}
-function toggleAuthMode(){signupMode=!signupMode;authHint.textContent=signupMode?'Create your owner account.':'Sign in to your shop from any phone or computer.';authShopName.style.display=signupMode?'block':'none';authMain.textContent=signupMode?'Create Account':'Sign In';authSwitch.textContent=signupMode?'Already have an account':'Create account';setErr('')}
+const SUPABASE_URL = 'https://vchkrwadfykredtcsxrb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
+let supa = null, authSignup=false, currentUser=null, shopId=null;
+
+function cloudReady(){return SUPABASE_URL.startsWith('http') && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')}
+
+async function initCloud(){
+ if(!cloudReady()){ document.getElementById('authOverlay').style.display='none'; return; }
+ supa=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data}=await supa.auth.getSession();
+ if(data.session) await enterCloud(data.session.user); else document.getElementById('authOverlay').style.display='flex';
+ supa.auth.onAuthStateChange(async (_e,session)=>{ if(session) await enterCloud(session.user); });
+}
+function toggleAuth(){
+ authSignup=!authSignup;
+ authModeText.textContent=authSignup?'Create your shop owner account':'Sign in to your shop';
+ authShop.style.display=authSignup?'block':'none';
+ authBtn.textContent=authSignup?'Create Account':'Sign In';
+ authToggle.textContent=authSignup?'Already have an account':'Create account';
+ authError.textContent='';
+}
 async function authSubmit(){
- setErr('');const email=authEmail.value.trim(),password=authPassword.value;if(!email||password.length<6){setErr('Enter email and a password of at least 6 characters.');return}
- authMain.disabled=true;
- try{
-  if(signupMode){localStorage.setItem('bikepro_pending_shop',authShopName.value.trim()||'My Bike Shop');const {data,error}=await supa.auth.signUp({email,password});if(error)throw error;if(data.session){await ensureProfile(data.user)}else{setErr('Account created. Check your email, then sign in.',true);toggleAuthMode()}}
-  else{const {data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;await enterCloud(data.user)}
- }catch(e){setErr(e.message||'Login failed')}finally{authMain.disabled=false}
+ authError.textContent='';
+ if(!supa){authError.textContent='Cloud is not configured yet. Add Supabase URL/key in this file.';return;}
+ let email=authEmail.value.trim(),pw=authPassword.value;
+ if(!email||pw.length<6){authError.textContent='Enter email and a password of at least 6 characters.';return;}
+ if(authSignup){
+   let {data,error}=await supa.auth.signUp({email,password:pw});
+   if(error){authError.textContent=error.message;return;}
+   if(data.user){
+     let shop=(authShop.value.trim()||'My Bike Shop');
+     let {data:sh,error:se}=await supa.from('shops').insert({name:shop,owner_id:data.user.id}).select().single();
+     if(se){authError.textContent=se.message;return;}
+     shopId=sh.id; await supa.from('profiles').upsert({id:data.user.id,shop_id:shopId,role:'owner'});
+     authError.style.color='#166534';authError.textContent='Account created. Check email if confirmation is enabled.';
+   }
+ } else {
+   let {data,error}=await supa.auth.signInWithPassword({email,password:pw});
+   if(error)authError.textContent=error.message; else if(data.session)await enterCloud(data.session.user);
+ }
 }
-async function ensureProfile(user){
- let {data:p,error}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).maybeSingle();if(error)throw error;
- if(!p){let name=localStorage.getItem('bikepro_pending_shop')||'My Bike Shop';let {data:sh,error:se}=await supa.from('shops').insert({name,owner_id:user.id}).select('id').single();if(se)throw se;let {error:pe}=await supa.from('profiles').insert({id:user.id,shop_id:sh.id,role:'owner'});if(pe)throw pe;p={shop_id:sh.id,role:'owner'};localStorage.removeItem('bikepro_pending_shop')}
- shopId=p.shop_id;return p;
+async function enterCloud(user){
+ currentUser=user;
+ let {data:profile}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).single();
+ if(!profile){document.getElementById('authError').textContent='Profile not found. Run the supplied SQL setup first.';return;}
+ shopId=profile.shop_id;
+ authOverlay.style.display='none';userbar.style.display='flex';userEmail.textContent=user.email+' • '+profile.role;
+ await loadCloud();
 }
-async function enterCloud(user){cloudUser=user;let p=await ensureProfile(user);cloudbar.style.display='flex';cloudUser.textContent=user.email+' • '+p.role;authOverlay.style.display='none';await loadCloud()}
-async function cloudSignOut(){await supa.auth.signOut();location.reload()}
+async function signOut(){if(supa)await supa.auth.signOut();location.reload()}
+
 async function loadCloud(){
- const [cs,ps,ss,pm,pu]=await Promise.all([
-  supa.from('customers').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('products').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('sales').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('payments').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('purchases').select('*').eq('shop_id',shopId).order('created_at',{ascending:false})
+ let [cs,ps,ss,pays,purs]=await Promise.all([
+  supa.from('customers').select('*').order('created_at'),
+  supa.from('products').select('*').order('created_at'),
+  supa.from('sales').select('*').order('created_at',{ascending:false}),
+  supa.from('payments').select('*').order('created_at',{ascending:false}),
+  supa.from('purchases').select('*').order('created_at',{ascending:false})
  ]);
- for(const x of [cs,ps,ss,pm,pu])if(x.error)throw x.error;
  db.customers=(cs.data||[]).map(x=>({id:x.id,name:x.name,phone:x.phone||''}));
  db.products=(ps.data||[]).map(x=>({id:x.id,name:x.name,cat:x.category||'General',brand:x.brand||'',cost:Number(x.cost||0),rate:Number(x.sale_price||0),stock:Number(x.stock||0)}));
- db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.payments=(pm.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
- db.purchases=(pu.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.suppliers=[...new Set(db.purchases.map(x=>x.supplier))].map((name,i)=>({id:i,name}));refresh()
+ db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:x.qty,rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ db.payments=(pays.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
+ db.purchases=(purs.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:x.qty,rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ refresh();
 }
-async function cloudInsert(table,row){let {error}=await supa.from(table).insert(row);if(error){toast(error.message);return false}return true}
-async function cloudCustomer(){let n=custName.value.trim();if(!n)return toast('Enter customer name');if(await cloudInsert('customers',{shop_id:shopId,name:n,phone:custPhone.value||''})){custName.value='';custPhone.value='';await loadCloud();toast('Customer saved to cloud')}}
-async function cloudProduct(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');if(await cloudInsert('products',{shop_id:shopId,name:n,category:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,sale_price:r,stock:s})){prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';await loadCloud();toast('Product saved to cloud')}}
-async function cloudSale(){let c=saleCustomer.value,pid=saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,pay=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);if(!p||q<1||q>p.stock)return toast('Check product/quantity');let x={invoice_no:'INV-'+Date.now(),shop_id:shopId,customer_id:c,product_id:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(pay,t),balance:Math.max(0,t-pay)};if(await cloudInsert('sales',x)){let {error}=await supa.from('products').update({stock:p.stock-q}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved');show('dashboard')}}
-async function cloudPayment(){let c=payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');if(await cloudInsert('payments',{shop_id:shopId,customer_id:c,amount:a})){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}
-async function cloudPurchase(){let pid=purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,pay=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');let total=q*r,x={invoice_no:'PUR-'+Date.now(),shop_id:shopId,supplier:sn,product_id:pid,qty:q,rate:r,total,paid:Math.min(pay,total),balance:Math.max(0,total-pay)};if(await cloudInsert('purchases',x)){let {error}=await supa.from('products').update({stock:p.stock+q,cost:r}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved')}}
-// Replace local mutations with cloud mutations.
-addCustomer=cloudCustomer;addProduct=cloudProduct;saveSale=cloudSale;savePayment=cloudPayment;savePurchase=cloudPurchase;
-window.addEventListener('load',async()=>{try{const {data}=await supa.auth.getSession();if(data.session)await enterCloud(data.session.user);else authOverlay.style.display='flex';supa.auth.onAuthStateChange(async(_e,session)=>{if(session&&!cloudUser)await enterCloud(session.user)})}catch(e){setErr(e.message||'Cloud connection failed')}});
+
+async function cloudSaveCustomer(obj){
+ let {error}=await supa.from('customers').insert({shop_id:shopId,name:obj.name,phone:obj.phone||''});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveProduct(obj){
+ let {error}=await supa.from('products').insert({shop_id:shopId,name:obj.name,category:obj.cat,brand:obj.brand,cost:obj.cost,sale_price:obj.rate,stock:obj.stock});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveSale(x,p){
+ let {error}=await supa.from('sales').insert({shop_id:shopId,invoice_no:x.invoice,customer_id:x.customerId,product_id:x.productId,qty:x.qty,rate:x.rate,cost:x.cost,discount:x.discount,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false}
+ return true;
+}
+async function cloudSavePayment(x){
+ let {error}=await supa.from('payments').insert({shop_id:shopId,customer_id:x.customerId,amount:x.amount});
+ if(error){toast(error.message);return false} return true;
+}
+async function cloudSavePurchase(x,p){
+ let {error}=await supa.from('purchases').insert({shop_id:shopId,invoice_no:x.invoice,supplier:x.supplier,product_id:x.productId,qty:x.qty,rate:x.rate,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock,cost:p.cost}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false} return true;
+}
+</script>
+
+<script>
+const localAddCustomer=addCustomer, localAddProduct=addProduct, localSaveSale=saveSale, localSavePayment=savePayment, localSavePurchase=savePurchase;
+addCustomer=async function(){let n=custName.value.trim();if(!n)return toast('Enter customer name');let o={name:n,phone:custPhone.value};if(cloudReady()&&supa&&shopId){await cloudSaveCustomer(o);custName.value='';custPhone.value='';toast('Customer saved to cloud')}else localAddCustomer();}
+addProduct=async function(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');let o={name:n,cat:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,rate:r,stock:s};if(cloudReady()&&supa&&shopId){await cloudSaveProduct(o);prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';toast('Product saved to cloud')}else localAddProduct();}
+saveSale=async function(){
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
+ if(!p||q<1||q>p.stock)return toast('Check product/quantity');
+ let invoice='INV-'+(db.sales.length+1001),x={id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)};
+ p.stock-=q;
+ if(cloudReady()&&supa&&shopId){if(await cloudSaveSale(x,p)){await loadCloud();toast(invoice+' saved to cloud');printInvoice(x);show('dashboard')}}else localSaveSale();
+}
+savePayment=async function(){let c=+payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');let x={customerId:c,amount:a};if(cloudReady()&&supa&&shopId){if(await cloudSavePayment(x)){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}else localSavePayment();}
+savePurchase=async function(){
+ let pid=+purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,paidv=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();
+ if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');
+ let x={id:Date.now(),invoice:'PUR-'+(db.purchases.length+5001),date:new Date().toISOString(),supplier:sn,productId:pid,qty:q,rate:r,total:q*r,paid:Math.min(paidv,q*r),balance:Math.max(0,q*r-paidv)};p.stock+=q;p.cost=r;
+ if(cloudReady()&&supa&&shopId){if(await cloudSavePurchase(x,p)){await loadCloud();toast(x.invoice+' saved to cloud');printPurchase(x)}}else localSavePurchase();
+}
+window.addEventListener('load',initCloud);
 </script>
 </body></html>`);w.document.close();
 }
@@ -326,58 +473,124 @@ function renderRecent(){recentSales.innerHTML=db.sales.slice(0,6).map(s=>{let c=
 function renderCustomers(){customerList.innerHTML=db.customers.map(c=>{let bal=db.sales.filter(s=>s.customerId==c.id).reduce((a,s)=>a+s.balance,0)-db.payments.filter(p=>p.customerId==c.id).reduce((a,p)=>a+p.amount,0);return `<div class="item"><b>${c.name}</b><small>${c.phone||'No phone'} • Balance: ${money(Math.max(0,bal))}</small></div>`}).join('')}
 function renderProducts(){productList.innerHTML=db.products.map(p=>`<div class="item"><b>${p.name}</b><small>${p.cat||'General'} • Rate ${money(p.rate)} • Stock ${p.stock}</small></div>`).join('')}
 function renderPayments(){paymentList.innerHTML=db.payments.slice(0,15).map(p=>`<div class="item"><b>${db.customers.find(c=>c.id==p.customerId)?.name}</b><small>Payment ${money(p.amount)} • ${new Date(p.date).toLocaleString()}</small></div>`).join('')||'<div class="muted">No payments yet.</div>'}
-function renderLedger(){let c=ledgerCustomer?.value;if(!c)return;let rows=[];db.sales.filter(s=>s.customerId==c).forEach(s=>rows.push({date:s.date,type:'Sale',debit:s.total,credit:s.paid,ref:db.products.find(p=>p.id==s.productId)?.name||''}));db.payments.filter(p=>p.customerId==c).forEach(p=>rows.push({date:p.date,type:'Payment',debit:0,credit:p.amount,ref:'Customer payment'}));rows.sort((a,b)=>new Date(a.date)-new Date(b.date));let bal=0;let body=rows.map(x=>{bal+=x.debit-x.credit;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.type}<br><small>${x.ref}</small></td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(bal)}</td></tr>`}).join('');ledgerBox.innerHTML=`<table><tr><th>Date</th><th>Transaction</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>${body}</table>`}
+function renderLedger(){let c=+ledgerCustomer?.value;if(!c)return;let rows=[];db.sales.filter(s=>s.customerId==c).forEach(s=>rows.push({date:s.date,type:'Sale',debit:s.total,credit:s.paid,ref:db.products.find(p=>p.id==s.productId)?.name||''}));db.payments.filter(p=>p.customerId==c).forEach(p=>rows.push({date:p.date,type:'Payment',debit:0,credit:p.amount,ref:'Customer payment'}));rows.sort((a,b)=>new Date(a.date)-new Date(b.date));let bal=0;let body=rows.map(x=>{bal+=x.debit-x.credit;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.type}<br><small>${x.ref}</small></td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(bal)}</td></tr>`}).join('');ledgerBox.innerHTML=`<table><tr><th>Date</th><th>Transaction</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>${body}</table>`}
 refresh();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://vchkrwadfykredtcsxrb.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
-const supa=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let cloudUser=null, shopId=null, signupMode=false;
-const cloudDB=()=>true;
-function setErr(t,ok=false){authErr.textContent=t;authErr.style.color=ok?'#166534':'#b91c1c'}
-function toggleAuthMode(){signupMode=!signupMode;authHint.textContent=signupMode?'Create your owner account.':'Sign in to your shop from any phone or computer.';authShopName.style.display=signupMode?'block':'none';authMain.textContent=signupMode?'Create Account':'Sign In';authSwitch.textContent=signupMode?'Already have an account':'Create account';setErr('')}
+const SUPABASE_URL = 'https://vchkrwadfykredtcsxrb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
+let supa = null, authSignup=false, currentUser=null, shopId=null;
+
+function cloudReady(){return SUPABASE_URL.startsWith('http') && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')}
+
+async function initCloud(){
+ if(!cloudReady()){ document.getElementById('authOverlay').style.display='none'; return; }
+ supa=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data}=await supa.auth.getSession();
+ if(data.session) await enterCloud(data.session.user); else document.getElementById('authOverlay').style.display='flex';
+ supa.auth.onAuthStateChange(async (_e,session)=>{ if(session) await enterCloud(session.user); });
+}
+function toggleAuth(){
+ authSignup=!authSignup;
+ authModeText.textContent=authSignup?'Create your shop owner account':'Sign in to your shop';
+ authShop.style.display=authSignup?'block':'none';
+ authBtn.textContent=authSignup?'Create Account':'Sign In';
+ authToggle.textContent=authSignup?'Already have an account':'Create account';
+ authError.textContent='';
+}
 async function authSubmit(){
- setErr('');const email=authEmail.value.trim(),password=authPassword.value;if(!email||password.length<6){setErr('Enter email and a password of at least 6 characters.');return}
- authMain.disabled=true;
- try{
-  if(signupMode){localStorage.setItem('bikepro_pending_shop',authShopName.value.trim()||'My Bike Shop');const {data,error}=await supa.auth.signUp({email,password});if(error)throw error;if(data.session){await ensureProfile(data.user)}else{setErr('Account created. Check your email, then sign in.',true);toggleAuthMode()}}
-  else{const {data,error}=await supa.auth.signInWithPassword({email,password});if(error)throw error;await enterCloud(data.user)}
- }catch(e){setErr(e.message||'Login failed')}finally{authMain.disabled=false}
+ authError.textContent='';
+ if(!supa){authError.textContent='Cloud is not configured yet. Add Supabase URL/key in this file.';return;}
+ let email=authEmail.value.trim(),pw=authPassword.value;
+ if(!email||pw.length<6){authError.textContent='Enter email and a password of at least 6 characters.';return;}
+ if(authSignup){
+   let {data,error}=await supa.auth.signUp({email,password:pw});
+   if(error){authError.textContent=error.message;return;}
+   if(data.user){
+     let shop=(authShop.value.trim()||'My Bike Shop');
+     let {data:sh,error:se}=await supa.from('shops').insert({name:shop,owner_id:data.user.id}).select().single();
+     if(se){authError.textContent=se.message;return;}
+     shopId=sh.id; await supa.from('profiles').upsert({id:data.user.id,shop_id:shopId,role:'owner'});
+     authError.style.color='#166534';authError.textContent='Account created. Check email if confirmation is enabled.';
+   }
+ } else {
+   let {data,error}=await supa.auth.signInWithPassword({email,password:pw});
+   if(error)authError.textContent=error.message; else if(data.session)await enterCloud(data.session.user);
+ }
 }
-async function ensureProfile(user){
- let {data:p,error}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).maybeSingle();if(error)throw error;
- if(!p){let name=localStorage.getItem('bikepro_pending_shop')||'My Bike Shop';let {data:sh,error:se}=await supa.from('shops').insert({name,owner_id:user.id}).select('id').single();if(se)throw se;let {error:pe}=await supa.from('profiles').insert({id:user.id,shop_id:sh.id,role:'owner'});if(pe)throw pe;p={shop_id:sh.id,role:'owner'};localStorage.removeItem('bikepro_pending_shop')}
- shopId=p.shop_id;return p;
+async function enterCloud(user){
+ currentUser=user;
+ let {data:profile}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).single();
+ if(!profile){document.getElementById('authError').textContent='Profile not found. Run the supplied SQL setup first.';return;}
+ shopId=profile.shop_id;
+ authOverlay.style.display='none';userbar.style.display='flex';userEmail.textContent=user.email+' • '+profile.role;
+ await loadCloud();
 }
-async function enterCloud(user){cloudUser=user;let p=await ensureProfile(user);cloudbar.style.display='flex';cloudUser.textContent=user.email+' • '+p.role;authOverlay.style.display='none';await loadCloud()}
-async function cloudSignOut(){await supa.auth.signOut();location.reload()}
+async function signOut(){if(supa)await supa.auth.signOut();location.reload()}
+
 async function loadCloud(){
- const [cs,ps,ss,pm,pu]=await Promise.all([
-  supa.from('customers').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('products').select('*').eq('shop_id',shopId).order('created_at'),
-  supa.from('sales').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('payments').select('*').eq('shop_id',shopId).order('created_at',{ascending:false}),
-  supa.from('purchases').select('*').eq('shop_id',shopId).order('created_at',{ascending:false})
+ let [cs,ps,ss,pays,purs]=await Promise.all([
+  supa.from('customers').select('*').order('created_at'),
+  supa.from('products').select('*').order('created_at'),
+  supa.from('sales').select('*').order('created_at',{ascending:false}),
+  supa.from('payments').select('*').order('created_at',{ascending:false}),
+  supa.from('purchases').select('*').order('created_at',{ascending:false})
  ]);
- for(const x of [cs,ps,ss,pm,pu])if(x.error)throw x.error;
  db.customers=(cs.data||[]).map(x=>({id:x.id,name:x.name,phone:x.phone||''}));
  db.products=(ps.data||[]).map(x=>({id:x.id,name:x.name,cat:x.category||'General',brand:x.brand||'',cost:Number(x.cost||0),rate:Number(x.sale_price||0),stock:Number(x.stock||0)}));
- db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.payments=(pm.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
- db.purchases=(pu.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:Number(x.qty),rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.suppliers=[...new Set(db.purchases.map(x=>x.supplier))].map((name,i)=>({id:i,name}));refresh()
+ db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:x.qty,rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ db.payments=(pays.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
+ db.purchases=(purs.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:x.qty,rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ refresh();
 }
-async function cloudInsert(table,row){let {error}=await supa.from(table).insert(row);if(error){toast(error.message);return false}return true}
-async function cloudCustomer(){let n=custName.value.trim();if(!n)return toast('Enter customer name');if(await cloudInsert('customers',{shop_id:shopId,name:n,phone:custPhone.value||''})){custName.value='';custPhone.value='';await loadCloud();toast('Customer saved to cloud')}}
-async function cloudProduct(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');if(await cloudInsert('products',{shop_id:shopId,name:n,category:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,sale_price:r,stock:s})){prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';await loadCloud();toast('Product saved to cloud')}}
-async function cloudSale(){let c=saleCustomer.value,pid=saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,pay=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);if(!p||q<1||q>p.stock)return toast('Check product/quantity');let x={invoice_no:'INV-'+Date.now(),shop_id:shopId,customer_id:c,product_id:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(pay,t),balance:Math.max(0,t-pay)};if(await cloudInsert('sales',x)){let {error}=await supa.from('products').update({stock:p.stock-q}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved');show('dashboard')}}
-async function cloudPayment(){let c=payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');if(await cloudInsert('payments',{shop_id:shopId,customer_id:c,amount:a})){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}
-async function cloudPurchase(){let pid=purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,pay=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');let total=q*r,x={invoice_no:'PUR-'+Date.now(),shop_id:shopId,supplier:sn,product_id:pid,qty:q,rate:r,total,paid:Math.min(pay,total),balance:Math.max(0,total-pay)};if(await cloudInsert('purchases',x)){let {error}=await supa.from('products').update({stock:p.stock+q,cost:r}).eq('id',p.id).eq('shop_id',shopId);if(error){toast(error.message);return}await loadCloud();toast(x.invoice_no+' saved')}}
-// Replace local mutations with cloud mutations.
-addCustomer=cloudCustomer;addProduct=cloudProduct;saveSale=cloudSale;savePayment=cloudPayment;savePurchase=cloudPurchase;
-window.addEventListener('load',async()=>{try{const {data}=await supa.auth.getSession();if(data.session)await enterCloud(data.session.user);else authOverlay.style.display='flex';supa.auth.onAuthStateChange(async(_e,session)=>{if(session&&!cloudUser)await enterCloud(session.user)})}catch(e){setErr(e.message||'Cloud connection failed')}});
+
+async function cloudSaveCustomer(obj){
+ let {error}=await supa.from('customers').insert({shop_id:shopId,name:obj.name,phone:obj.phone||''});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveProduct(obj){
+ let {error}=await supa.from('products').insert({shop_id:shopId,name:obj.name,category:obj.cat,brand:obj.brand,cost:obj.cost,sale_price:obj.rate,stock:obj.stock});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveSale(x,p){
+ let {error}=await supa.from('sales').insert({shop_id:shopId,invoice_no:x.invoice,customer_id:x.customerId,product_id:x.productId,qty:x.qty,rate:x.rate,cost:x.cost,discount:x.discount,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false}
+ return true;
+}
+async function cloudSavePayment(x){
+ let {error}=await supa.from('payments').insert({shop_id:shopId,customer_id:x.customerId,amount:x.amount});
+ if(error){toast(error.message);return false} return true;
+}
+async function cloudSavePurchase(x,p){
+ let {error}=await supa.from('purchases').insert({shop_id:shopId,invoice_no:x.invoice,supplier:x.supplier,product_id:x.productId,qty:x.qty,rate:x.rate,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock,cost:p.cost}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false} return true;
+}
+</script>
+
+<script>
+const localAddCustomer=addCustomer, localAddProduct=addProduct, localSaveSale=saveSale, localSavePayment=savePayment, localSavePurchase=savePurchase;
+addCustomer=async function(){let n=custName.value.trim();if(!n)return toast('Enter customer name');let o={name:n,phone:custPhone.value};if(cloudReady()&&supa&&shopId){await cloudSaveCustomer(o);custName.value='';custPhone.value='';toast('Customer saved to cloud')}else localAddCustomer();}
+addProduct=async function(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');let o={name:n,cat:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,rate:r,stock:s};if(cloudReady()&&supa&&shopId){await cloudSaveProduct(o);prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';toast('Product saved to cloud')}else localAddProduct();}
+saveSale=async function(){
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
+ if(!p||q<1||q>p.stock)return toast('Check product/quantity');
+ let invoice='INV-'+(db.sales.length+1001),x={id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)};
+ p.stock-=q;
+ if(cloudReady()&&supa&&shopId){if(await cloudSaveSale(x,p)){await loadCloud();toast(invoice+' saved to cloud');printInvoice(x);show('dashboard')}}else localSaveSale();
+}
+savePayment=async function(){let c=+payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');let x={customerId:c,amount:a};if(cloudReady()&&supa&&shopId){if(await cloudSavePayment(x)){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}else localSavePayment();}
+savePurchase=async function(){
+ let pid=+purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,paidv=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();
+ if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');
+ let x={id:Date.now(),invoice:'PUR-'+(db.purchases.length+5001),date:new Date().toISOString(),supplier:sn,productId:pid,qty:q,rate:r,total:q*r,paid:Math.min(paidv,q*r),balance:Math.max(0,q*r-paidv)};p.stock+=q;p.cost=r;
+ if(cloudReady()&&supa&&shopId){if(await cloudSavePurchase(x,p)){await loadCloud();toast(x.invoice+' saved to cloud');printPurchase(x)}}else localSavePurchase();
+}
+window.addEventListener('load',initCloud);
 </script>
 </body></html>
