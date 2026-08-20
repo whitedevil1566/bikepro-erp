@@ -1,406 +1,108 @@
 <!doctype html>
 <html lang="en">
-<head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BikePro ERP</title>
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:#f4f6f8;color:#17202a}
-.app{max-width:520px;margin:auto;min-height:100vh;background:#f7f8fa;padding-bottom:82px}
-header{background:#111827;color:#fff;padding:22px 18px 18px;border-radius:0 0 22px 22px}
-.brand{font-size:24px;font-weight:800}.sub{opacity:.7;font-size:12px;margin-top:3px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.stat{background:#fff;color:#111827;border-radius:15px;padding:14px;box-shadow:0 3px 14px #0000000d}.stat b{display:block;font-size:20px;margin-top:4px}
-main{padding:16px}.page{display:none}.page.active{display:block}.title{font-size:20px;font-weight:800;margin:4px 0 14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border:1px solid #e7eaf0;border-radius:16px;padding:16px;box-shadow:0 3px 12px #00000008}.card h3{margin:0 0 5px;font-size:16px}.muted{color:#6b7280;font-size:12px}
-button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}.primary{background:#111827;color:#fff}.secondary{background:#e9edf2;color:#111827}.danger{background:#fee2e2;color:#991b1b}
-input,select{width:100%;padding:13px;border:1px solid #dce1e8;border-radius:11px;background:#fff;font-size:15px;margin:5px 0 10px}label{font-size:12px;font-weight:700;color:#4b5563}
-.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.list{display:grid;gap:9px}.item{background:#fff;padding:13px;border-radius:13px;border:1px solid #e8ebef}.item b{display:block}.item small{color:#6b7280}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.search{margin-bottom:12px}
-.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:#fff;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(6,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}.nav{background:none;color:#6b7280;padding:7px 2px;font-size:11px}.nav.active{color:#111827}.nav span{display:block;font-size:19px;margin-bottom:2px}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}td,th{padding:10px;border-bottom:1px solid #edf0f3;text-align:left;font-size:12px}th{background:#f8fafc}
-.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;display:none;z-index:10;font-size:13px}
-
-<style>
-.auth-overlay{position:fixed;inset:0;background:#f4f6f8;display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
-.auth-box{width:min(420px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 15px 50px #0002}
-.auth-box h1{margin:0 0 5px}.auth-box p{color:#6b7280;font-size:13px}.auth-error{color:#b91c1c;font-size:12px;margin:6px 0;min-height:18px}
-.userbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#fff;border-bottom:1px solid #eee;font-size:12px}
-</style>
-
-<style id="sales-responsive-fix">
-.sales-page{min-width:0}.sales-title{display:flex;align-items:center;justify-content:space-between}.sale-badge{font-size:11px;padding:5px 9px;border-radius:999px;background:#e9edf2;color:#4b5563}.sales-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px;align-items:start}.sales-form,.sales-summary{min-width:0}.sales-section-title{font-weight:800;font-size:14px;margin-bottom:12px}.sale-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sale-fields>div{min-width:0}.sales-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:9px;margin-top:8px}.sales-actions button{width:100%;min-height:48px}.sales-summary{position:sticky;top:12px}.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #edf0f3;font-size:13px}.sales-total{display:flex;justify-content:space-between;align-items:center;padding:17px 0 12px}.sales-total span{font-weight:700}.sales-total strong{font-size:28px}.balance{color:#b45309}.sale-hint{margin-top:12px;padding:11px;border-radius:11px;background:#f8fafc;color:#6b7280;font-size:11px;line-height:1.4}
-@media(max-width:700px){.sales-layout{grid-template-columns:1fr;gap:10px}.sales-summary{position:static;order:-1}.sales-form,.sales-summary{padding:14px!important}.sale-fields{grid-template-columns:1fr 1fr;gap:8px}.sale-fields input{font-size:16px;min-height:48px}.sales-form select{min-height:48px;font-size:16px}.sales-actions{grid-template-columns:1fr 1.3fr}.sales-total strong{font-size:25px}.summary-row{padding:8px 0}.sale-hint{font-size:10px}}
-@media(max-width:360px){.sale-fields{grid-template-columns:1fr}.sales-actions{grid-template-columns:1fr}.sales-total strong{font-size:23px}.sales-title{font-size:18px}}
-</style>
-<style id="desktop-mobile-final-fix">
-*{box-sizing:border-box}html,body{margin:0;min-width:0;overflow-x:hidden}.app{width:100%;max-width:none;margin:0;min-height:100vh;background:#f7f8fa;padding:0 0 82px 250px}.desktop-sidebar{position:fixed;z-index:50;left:0;top:0;bottom:0;width:250px;background:#111827;color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:7px}.desktop-sidebar .brand{font-size:22px;padding:8px 10px 18px;display:flex;gap:7px;align-items:center}.desktop-sidebar .brand small{font-size:11px;opacity:.65}.desktop-sidebar button{border:0;background:transparent;color:#d1d5db;text-align:left;border-radius:10px;padding:12px 13px;font-size:14px;cursor:pointer}.desktop-sidebar button:hover,.desktop-sidebar button.active{background:#1f2937;color:#fff}.desktop-sidebar button span{margin-left:7px}.bottom{display:none!important}.more-nav{display:none}.page{max-width:1180px;margin:0 auto;padding:24px}.page.active{display:block}.title{font-size:24px;font-weight:800;margin-bottom:14px}.sales-page{max-width:1180px;margin:auto}.sales-layout{grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr)}.table-wrap,.list{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.list>table{min-width:620px}
-@media(max-width:900px){.app{padding-left:0}.desktop-sidebar{display:none}.bottom{display:grid!important;position:fixed;bottom:0;left:0;right:0;width:100%;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid #e5e7eb;padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:100}.nav{min-width:0;padding:6px 2px!important;font-size:10px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav span{display:block;font-size:18px!important}.more-nav{display:flex;position:fixed;right:10px;bottom:76px;z-index:101;flex-direction:column;gap:7px;background:#fff;padding:10px;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 35px #0002}.more-nav[hidden]{display:none}.more-nav button{border:0;background:#f8fafc;padding:11px 14px;border-radius:9px;text-align:left}.page{padding:14px 12px 92px}.title{font-size:20px}.sales-layout{grid-template-columns:1fr}.sales-summary{position:static}.sale-fields{grid-template-columns:1fr 1fr}.actions{grid-template-columns:1fr 1fr}.card{max-width:100%;overflow:hidden}}
-@media(max-width:430px){.sale-fields{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.bottom .nav{font-size:9px!important}.bottom .nav span{font-size:17px!important}.page{padding-left:10px;padding-right:10px}.purchase-nav{display:block!important}}
-</style></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>BikePro ERP</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
-
-<div id="authOverlay" class="auth-overlay">
-  <div class="auth-box">
-    <h1>🏍️ BikePro ERP</h1>
-    <p id="authModeText">Sign in to your shop</p>
-    <input id="authEmail" type="email" placeholder="Email">
-    <input id="authPassword" type="password" placeholder="Password">
-    <input id="authShop" placeholder="Shop name (for new account)" style="display:none">
-    <div class="auth-error" id="authError"></div>
-    <button class="primary" style="width:100%" onclick="authSubmit()" id="authBtn">Sign In</button>
-    <button class="secondary" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="authToggle">Create account</button>
-  </div>
-</div>
-<div class="userbar" id="userbar" style="display:none">
-  <span id="userEmail"></span><button class="secondary" onclick="signOut()">Sign out</button>
-</div>
-<div class="app"><aside class="desktop-sidebar" aria-label="Main navigation">
-  <div class="brand">🏍️ <b>BikePro</b><small>ERP</small></div>
-  <button onclick="show('dashboard')">⌂ <span>Dashboard</span></button>
-  <button onclick="show('sales')">🧾 <span>Sales / POS</span></button>
-  <button onclick="show('purchases')">📥 <span>Purchases</span></button>
-  <button onclick="show('customers')">👥 <span>Customers</span></button>
-  <button onclick="show('products')">📦 <span>Inventory</span></button>
-  <button onclick="show('ledger')">📒 <span>Ledgers</span></button>
-  <button onclick="show('reports')">📊 <span>Reports</span></button>
-</aside>
-<header>
-  <div class="brand">🏍️ BikePro ERP</div><div class="sub">Bike Accessories • Mobile Shop Management</div>
-  <div class="stats">
-    <div class="stat"><small>Today's Sales</small><b id="todaySales">Rs 0</b></div>
-    <div class="stat"><small>Receivable</small><b id="receivable">Rs 0</b></div>
-  </div>
-</header>
-
-<main>
-<section id="dashboard" class="page active">
-<div class="title">Dashboard</div>
-<div class="actions">
-<button class="primary" onclick="show('sales')">＋ New Sale</button>
-<button class="secondary" onclick="show('payments')">💵 Payment</button>
-<button class="secondary" onclick="show('purchases')">📥 Purchase</button>
-</div>
-<div class="grid">
-<div class="card"><h3>📦 Stock</h3><div class="muted">Items in stock</div><b id="stockCount">0</b></div>
-<div class="card"><h3>👥 Customers</h3><div class="muted">Registered customers</div><b id="customerCount">0</b></div>
-</div>
-<h3>Recent Sales</h3><div id="recentSales" class="list"></div>
-</section>
-
-<section id="sales" class="page sales-page">
-<div class="title sales-title"><span>New Sale</span><span class="sale-badge">POS</span></div>
-<div class="sales-layout">
-  <div class="card sales-form">
-    <div class="sales-section-title">Customer & Product</div>
-    <label>Customer</label><select id="saleCustomer"></select>
-    <label>Product</label><select id="saleProduct" onchange="fillRate()"></select>
-    <div class="sale-fields">
-      <div><label>Qty</label><input id="qty" type="number" min="1" value="1" oninput="calc()"></div>
-      <div><label>Rate</label><input id="rate" type="number" min="0" oninput="calc()"></div>
-    </div>
-    <div class="sale-fields">
-      <div><label>Discount</label><input id="discount" type="number" min="0" value="0" oninput="calc()"></div>
-      <div><label>Paid</label><input id="paid" type="number" min="0" value="0" oninput="calc()"></div>
-    </div>
-    <div class="sales-actions">
-      <button class="secondary" type="button" onclick="calc()">↻ Recalculate</button>
-      <button class="primary" type="button" onclick="saveSale()">💾 Save & Print</button>
+  <div id="authOverlay" class="overlay">
+    <div class="auth-card">
+      <div class="brand-mark">🏍️</div>
+      <h1>BikePro ERP</h1>
+      <p id="authModeText" class="muted">Sign in to your cloud shop</p>
+      <form id="authForm">
+        <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
+        <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="6" required></label>
+        <label id="shopNameWrap" class="hidden">Shop name<input id="authShop" autocomplete="organization"></label>
+        <div id="authError" class="form-error" role="alert"></div>
+        <button id="authBtn" class="btn primary full" type="submit">Sign In</button>
+      </form>
+      <button id="authToggle" class="btn secondary full" type="button">Create account</button>
+      <button id="offlineBtn" class="btn ghost full" type="button">Continue Offline</button>
+      <p class="auth-note">Offline data stays on this device. Cloud data is stored in your Supabase shop.</p>
     </div>
   </div>
-  <div class="card sales-summary">
-    <div class="sales-section-title">Invoice Summary</div>
-    <div class="summary-row"><span>Subtotal</span><b id="saleSubtotal">Rs 0</b></div>
-    <div class="summary-row"><span>Discount</span><b id="saleDiscountView">Rs 0</b></div>
-    <div class="sales-total"><span>Total</span><strong id="saleTotal">Rs 0</strong></div>
-    <div class="summary-row balance"><span>Balance</span><b id="saleBalance">Rs 0</b></div>
-    <div class="sale-hint">💡 Select a customer, choose a product, enter quantity and payment, then save.</div>
+
+  <div id="appShell" class="shell hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div>
+          <div class="brand">🏍️ BikePro <span>ERP</span></div>
+          <div class="sub" id="shopSubtitle">Bike Accessories • Mobile Shop Management</div>
+        </div>
+        <div class="top-actions">
+          <span id="connectionBadge" class="badge">Offline</span>
+          <button id="connectBtn" class="btn small secondary">Connect Cloud</button>
+          <button id="signOutBtn" class="btn small secondary hidden">Sign out</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Today's Sales</span><strong id="todaySales">Rs 0</strong></div>
+        <div class="stat"><span>Receivable</span><strong id="receivable">Rs 0</strong></div>
+        <div class="stat desktop-only"><span>Stock Value</span><strong id="stockValue">Rs 0</strong></div>
+        <div class="stat desktop-only"><span>Low Stock</span><strong id="lowStockCount">0</strong></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <button class="side-nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+        <button class="side-nav" data-page="sales">🧾 <span>Sales / POS</span></button>
+        <button class="side-nav" data-page="purchases">📥 <span>Purchases</span></button>
+        <button class="side-nav" data-page="customers">👥 <span>Customers</span></button>
+        <button class="side-nav" data-page="products">📦 <span>Inventory</span></button>
+        <button class="side-nav" data-page="payments">💵 <span>Payments</span></button>
+        <button class="side-nav" data-page="ledger">📒 <span>Ledgers</span></button>
+        <button class="side-nav" data-page="reports">📊 <span>Reports</span></button>
+        <button class="side-nav" data-page="settings">⚙️ <span>Settings</span></button>
+      </aside>
+
+      <main class="content">
+        <section id="dashboard" class="page active">
+          <div class="page-head"><div><h2>Dashboard</h2><p class="muted">A clean overview of your shop.</p></div><div class="quick-actions"><button class="btn primary" data-page="sales">＋ New Sale</button><button class="btn secondary" data-page="purchases">＋ Purchase</button></div></div>
+          <div class="metric-grid"><div class="card metric"><span>Sales today</span><strong id="dashSales">Rs 0</strong></div><div class="card metric"><span>Gross profit</span><strong id="dashProfit">Rs 0</strong></div><div class="card metric"><span>Receivables</span><strong id="dashReceivable">Rs 0</strong></div><div class="card metric"><span>Payables</span><strong id="dashPayable">Rs 0</strong></div></div>
+          <div class="two-col"><div class="card"><div class="card-head"><h3>Recent Sales</h3><button class="link-btn" data-page="sales">View all</button></div><div id="recentSales" class="list"></div></div><div class="card"><div class="card-head"><h3>Low Stock</h3><button class="link-btn" data-page="products">Inventory</button></div><div id="lowStockList" class="list"></div></div></div>
+        </section>
+
+        <section id="sales" class="page">
+          <div class="page-head"><div><h2>Sales / POS</h2><p class="muted">Build one invoice with multiple products.</p></div><div class="invoice-chip">Invoice <strong id="saleInvoiceNo">INV-1001</strong></div></div>
+          <div class="sales-layout">
+            <div class="card">
+              <div class="form-grid two"><label>Customer<select id="saleCustomer"></select></label><label>Invoice date<input id="saleDate" type="datetime-local"></label></div>
+              <div class="add-line"><label>Product<select id="saleProduct"></select></label><label>Qty<input id="saleQty" type="number" min="1" step="1" value="1"></label><label>Rate<input id="saleRate" type="number" min="0" step="0.01"></label><button id="addSaleItem" class="btn primary">Add item</button></div>
+              <div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="saleCartBody"></tbody></table><div id="saleCartEmpty" class="empty">No products added yet.</div></div>
+              <div class="form-grid two totals-inputs"><label>Invoice Discount<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label><label>Paid<input id="salePaid" type="number" min="0" step="0.01" value="0"></label></div>
+              <div class="summary"><div><span>Subtotal</span><strong id="saleSubtotal">Rs 0</strong></div><div><span>Discount</span><strong id="saleDiscountView">Rs 0</strong></div><div class="grand"><span>Total</span><strong id="saleTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="saleBalance">Rs 0</strong></div></div>
+              <button id="saveSaleBtn" class="btn primary full">Save Sale & Preview Invoice</button>
+            </div>
+            <div class="card side-help"><h3>Sale checklist</h3><ul><li>Choose customer</li><li>Add one or more products</li><li>Check stock and discount</li><li>Enter amount received</li><li>Save and print from preview</li></ul></div>
+          </div>
+        </section>
+
+        <section id="purchases" class="page">
+          <div class="page-head"><div><h2>Purchases</h2><p class="muted">Receive multiple products in one supplier invoice.</p></div><div class="invoice-chip">Purchase <strong id="purchaseInvoiceNo">PUR-5001</strong></div></div>
+          <div class="sales-layout"><div class="card"><div class="form-grid two"><label>Supplier<input id="purchaseSupplier"></label><label>Purchase date<input id="purchaseDate" type="datetime-local"></label></div><div class="add-line"><label>Product<select id="purchaseProduct"></select></label><label>Qty<input id="purchaseQty" type="number" min="1" step="1" value="1"></label><label>Rate<input id="purchaseRate" type="number" min="0" step="0.01"></label><button id="addPurchaseItem" class="btn primary">Add item</button></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="purchaseCartBody"></tbody></table><div id="purchaseCartEmpty" class="empty">No products added yet.</div></div><label>Paid to Supplier<input id="purchasePaid" type="number" min="0" step="0.01" value="0"></label><div class="summary"><div class="grand"><span>Total</span><strong id="purchaseTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="purchaseBalance">Rs 0</strong></div></div><button id="savePurchaseBtn" class="btn primary full">Save Purchase</button></div><div class="card"><h3>Recent Purchases</h3><div id="purchaseList" class="list"></div></div></div>
+        </section>
+
+        <section id="customers" class="page"><div class="page-head"><div><h2>Customers</h2><p class="muted">Customers and their outstanding balances.</p></div></div><div class="card form-grid three"><label>Name<input id="custName"></label><label>Phone<input id="custPhone"></label><label>&nbsp;<button id="addCustomerBtn" class="btn primary full">Add Customer</button></label></div><div id="customerList" class="list-grid"></div></section>
+        <section id="products" class="page"><div class="page-head"><div><h2>Inventory</h2><p class="muted">Products, pricing, stock and reorder levels.</p></div></div><div class="card form-grid six"><label>Name<input id="prodName"></label><label>Category<input id="prodCategory"></label><label>Brand<input id="prodBrand"></label><label>Cost<input id="prodCost" type="number" min="0" step="0.01"></label><label>Sale price<input id="prodRate" type="number" min="0" step="0.01"></label><label>Opening stock<input id="prodStock" type="number" min="0" step="1"></label><label>Reorder level<input id="prodReorder" type="number" min="0" step="1" value="5"></label><label>&nbsp;<button id="addProductBtn" class="btn primary full">Add Product</button></label></div><div id="productList" class="list-grid"></div></section>
+        <section id="payments" class="page"><div class="page-head"><div><h2>Customer Payments</h2><p class="muted">Record receipts and allocate them to outstanding invoices.</p></div></div><div class="card form-grid three"><label>Customer<select id="payCustomer"></select></label><label>Amount<input id="payAmount" type="number" min="0.01" step="0.01"></label><label>&nbsp;<button id="savePaymentBtn" class="btn primary full">Save Payment</button></label></div><div id="paymentList" class="list"></div></section>
+        <section id="ledger" class="page"><div class="page-head"><div><h2>Customer Ledger</h2><p class="muted">Invoice-level running balance.</p></div></div><div class="card"><label>Customer<select id="ledgerCustomer"></select></label><div id="ledgerBox" class="table-wrap"></div></div></section>
+        <section id="reports" class="page"><div class="page-head"><div><h2>Reports</h2><p class="muted">Sales, profit, stock and outstanding balances.</p></div></div><div class="metric-grid"><div class="card metric"><span>Sales</span><strong id="reportSales">Rs 0</strong></div><div class="card metric"><span>Gross Profit</span><strong id="reportProfit">Rs 0</strong></div><div class="card metric"><span>Stock Value</span><strong id="reportStock">Rs 0</strong></div><div class="card metric"><span>Receivable</span><strong id="reportReceivable">Rs 0</strong></div><div class="card metric"><span>Payable</span><strong id="reportPayable">Rs 0</strong></div></div><div class="card"><h3>Backup & Restore</h3><div class="actions"><button id="backupBtn" class="btn primary">Export Backup</button><button id="restoreBtn" class="btn secondary">Restore Backup</button><input id="restoreFile" type="file" accept="application/json" hidden></div></div></section>
+        <section id="settings" class="page"><div class="page-head"><div><h2>Settings</h2><p class="muted">Shop information and invoice preferences.</p></div></div><div class="card form-grid two"><label>Shop name<input id="settingShopName"></label><label>Phone<input id="settingPhone"></label><label>Address<textarea id="settingAddress"></textarea></label><label>Invoice footer<textarea id="settingFooter"></textarea></label><label>Currency<input id="settingCurrency"></label><label>Invoice prefix<input id="settingInvoicePrefix"></label><label>Low stock default<input id="settingReorder" type="number" min="0"></label><label>&nbsp;<button id="saveSettingsBtn" class="btn primary full">Save Settings</button></label></div></section>
+      </main>
+    </div>
+    <nav class="mobile-nav" aria-label="Mobile navigation"><button data-page="dashboard">⌂<span>Home</span></button><button data-page="sales">🧾<span>Sales</span></button><button data-page="purchases">📥<span>Purchase</span></button><button data-page="products">📦<span>Stock</span></button><button data-page="customers">👥<span>Customers</span></button><button data-page="more">☰<span>More</span></button></nav>
   </div>
-</div>
-</section>
 
-<section id="customers" class="page">
-<div class="title">Customers</div>
-<div class="card"><input id="custName" placeholder="Customer name"><input id="custPhone" placeholder="Phone"><button class="primary" onclick="addCustomer()">Add Customer</button></div>
-<br><div id="customerList" class="list"></div>
-</section>
+  <div id="moreSheet" class="sheet hidden"><div class="sheet-panel"><div class="sheet-head"><h3>More</h3><button id="closeSheet" class="icon-btn">×</button></div><div class="sheet-grid"><button data-page="payments">💵 Payments</button><button data-page="ledger">📒 Ledger</button><button data-page="reports">📊 Reports</button><button data-page="settings">⚙️ Settings</button></div></div></div>
 
-<section id="products" class="page">
-<div class="title">Products / Stock</div>
-<div class="card"><input id="prodName" placeholder="Product name (e.g. LED Headlight)"><input id="prodCategory" placeholder="Category"><input id="prodBrand" placeholder="Brand (e.g. Honda, Bosch)">
-<div class="row"><input id="prodCost" type="number" placeholder="Cost price"><input id="prodRate" type="number" placeholder="Selling rate"></div>
-<input id="prodStock" type="number" placeholder="Opening stock"><button class="primary" onclick="addProduct()">Add Product</button></div>
-<br><div id="productList" class="list"></div>
-</section>
-
-
-<section id="purchases" class="page">
-<div class="title">Purchase / Stock In</div>
-<div class="card">
-<div class="card" style="background:#f8fafc;margin-bottom:10px"><div class="muted">Purchase Invoice</div><h3 id="purchaseNo">PUR-5001</h3></div>
-<label>Supplier</label><input id="supplier" placeholder="Supplier name">
-<label>Product</label><select id="purchaseProduct"></select>
-<div class="row"><div><label>Qty</label><input id="purchaseQty" type="number" min="1" value="1"></div>
-<div><label>Purchase Rate</label><input id="purchaseRate" type="number" min="0"></div></div>
-<label>Paid to Supplier</label><input id="purchasePaid" type="number" min="0" value="0">
-<button class="primary" style="width:100%" onclick="savePurchase()">＋ Save Purchase</button>
-</div>
-<br><div id="purchaseList" class="list"></div>
-</section>
-
-<section id="payments" class="page">
-<div class="title">Customer Payment</div>
-<div class="card"><label>Customer</label><select id="payCustomer"></select><label>Amount</label><input id="payAmount" type="number" placeholder="Payment amount"><button class="primary" style="width:100%" onclick="savePayment()">Save Payment</button></div>
-<br><div id="paymentList" class="list"></div>
-</section>
-
-
-<section id="suppliers" class="page">
-<div class="title">Supplier Ledger</div>
-<div class="card"><input id="supplierName" placeholder="Supplier name"><button class="primary" onclick="addSupplier()">Add Supplier</button></div>
-<br><select id="supplierLedger" onchange="renderSupplierLedger()"></select><br><br>
-<div id="supplierLedgerBox"></div>
-</section>
-
-<section id="reports" class="page">
-<div class="title">Reports</div>
-<div class="grid">
-<div class="card"><div class="muted">Sales</div><h3 id="reportSales">Rs 0</h3></div>
-<div class="card"><div class="muted">Gross Profit</div><h3 id="reportProfit">Rs 0</h3></div>
-<div class="card"><div class="muted">Stock Value</div><h3 id="reportStock">Rs 0</h3></div>
-<div class="card"><div class="muted">Receivable</div><h3 id="reportReceivable">Rs 0</h3></div>
-</div>
-<br><div class="card"><h3>Backup & Restore</h3><p class="muted">Export your complete shop database or restore a previous backup.</p>
-<div class="actions"><button class="primary" onclick="exportBackup()">⬇ Backup</button><button class="secondary" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button></div>
-<input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restoreBackup(event)">
-</div>
-</section>
-
-<section id="ledger" class="page">
-<div class="title">Customer Ledger</div>
-<select id="ledgerCustomer" onchange="renderLedger()"></select><br><br>
-<div id="ledgerBox"></div>
-</section>
-</main>
-
-<nav class="bottom">
-<button class="nav active" onclick="show('dashboard',this)"><span>⌂</span>Home</button>
-<button class="nav" onclick="show('sales',this)"><span>🧾</span>Sales</button>
-<button class="nav purchase-nav" onclick="show('purchases',this)"><span>📥</span>Purchase</button>
-<button class="nav" onclick="show('products',this)"><span>📦</span>Stock</button>
-<button class="nav" onclick="toggleMoreNav()"><span>☰</span>More</button>
-</nav>
-<div id="moreNav" class="more-nav" hidden>
- <button onclick="show('customers');toggleMoreNav()">👥 Customers</button>
- <button onclick="show('ledger');toggleMoreNav()">📒 Ledger</button>
- <button onclick="show('reports');toggleMoreNav()">📊 Reports</button>
- <button onclick="toggleMoreNav()">✕ Close</button>
-</div>
-</div><div id="toast" class="toast"></div>
-
-<script>
-const key='bikepro_erp_v1';
-let db=JSON.parse(localStorage.getItem(key)||'null')||{
-customers:[{id:1,name:'Walk-in Customer',phone:''}],
-products:[
-{id:1,name:'LED Headlight',cat:'Lighting',brand:'Osram',cost:1200,rate:1800,stock:20},
-{id:2,name:'Bike Horn',cat:'Electrical',brand:'Bosch',cost:500,rate:750,stock:15},
-{id:3,name:'USB Charger',cat:'Electrical',brand:'Universal',cost:800,rate:1200,stock:12},
-{id:4,name:'Brake Lever Set',cat:'Controls',brand:'Honda',cost:600,rate:950,stock:10}
-],sales:[],payments:[],purchases:[],purchasePayments:[],settings:{nextSale:1001,nextPurchase:5001}
-};
-db.purchases=db.purchases||[]; db.purchasePayments=db.purchasePayments||[];
-db.settings=db.settings||{nextSale:1001,nextPurchase:5001};
-db.products.forEach(p=>{p.brand=p.brand||'';p.cost=Number(p.cost||0)});
-function save(){localStorage.setItem(key,JSON.stringify(db));refresh()}
-function money(n){return 'Rs '+Number(n||0).toLocaleString()}
-function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1600)}
-function toggleMoreNav(){const e=document.getElementById('moreNav');if(e)e.hidden=!e.hidden}
-function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');refresh()}
-function fillSelect(id,items,placeholder){let s=document.getElementById(id);if(!s)return;s.innerHTML=items.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');if(!items.length)s.innerHTML=`<option>${placeholder||'None'}</option>`}
-function refresh(){
- let total=db.sales.filter(x=>new Date(x.date).toDateString()==new Date().toDateString()).reduce((a,x)=>a+x.total,0);
- let debit={};db.customers.forEach(c=>debit[c.id]=0);db.sales.forEach(s=>debit[s.customerId]=(debit[s.customerId]||0)+s.balance);db.payments.forEach(p=>debit[p.customerId]=(debit[p.customerId]||0)-p.amount);
- document.getElementById('todaySales').textContent=money(total);document.getElementById('receivable').textContent=money(Object.values(debit).reduce((a,x)=>a+Math.max(0,x),0));
- document.getElementById('stockCount').textContent=db.products.reduce((a,p)=>a+Number(p.stock),0);document.getElementById('customerCount').textContent=db.customers.length;
- fillSelect('saleCustomer',db.customers);fillSelect('payCustomer',db.customers);fillSelect('ledgerCustomer',db.customers);fillSelect('saleProduct',db.products);fillSelect('purchaseProduct',db.products);
- fillRate();renderRecent();renderCustomers();renderProducts();renderPayments();renderPurchases();renderLedger();
- db.suppliers=db.suppliers||[];fillSelect('supplierLedger',db.suppliers);renderSupplierLedger();renderReports();updateInvoiceLabels();
-}
-function fillRate(){let p=db.products.find(x=>x.id==document.getElementById('saleProduct')?.value);if(p){document.getElementById('rate').value=p.rate;calc()}}
-function calc(){let q=+qty.value||0,r=+rate.value||0,d=+discount.value||0,p=+paid.value||0,sub=Math.max(0,q*r),t=Math.max(0,sub-d);saleTotal.textContent=money(t);saleBalance.textContent=money(Math.max(0,t-p));if(document.getElementById('saleSubtotal'))saleSubtotal.textContent=money(sub);if(document.getElementById('saleDiscountView'))saleDiscountView.textContent=money(d)}
-function saveSale(){
- let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0;
- let p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
- if(!p||q<1||q>p.stock)return toast('Check product/quantity');
- let invoice='INV-'+db.settings.nextSale++;
- db.sales.unshift({id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)});
- p.stock-=q; save(); toast(invoice+' saved'); printInvoice(db.sales[0]);
- qty.value=1;discount.value=0;paid.value=0;show('dashboard');
-}
-function renderPurchases(){
- let el=document.getElementById('purchaseList'); if(!el)return;
- el.innerHTML=(db.purchases||[]).slice(0,15).map(x=>`<div class="item"><b>${x.invoice} • ${db.products.find(p=>p.id==x.productId)?.name||''} • ${money(x.total)}</b><small>${x.supplier||'Supplier'} • Qty ${x.qty} • Balance ${money(x.balance)}</small><br><button class="secondary" onclick='printPurchase(${JSON.stringify(x)})'>🖨 Print</button></div>`).join('')||'<div class="muted">No purchases yet.</div>';
-}
-
-
-function addSupplier(){
- let n=supplierName.value.trim(); if(!n)return toast('Enter supplier name');
- db.suppliers=db.suppliers||[]; if(!db.suppliers.some(x=>x.name.toLowerCase()==n.toLowerCase()))db.suppliers.push({id:Date.now(),name:n});
- supplierName.value='';save();toast('Supplier added');
-}
-function printInvoice(x){
- let c=db.customers.find(c=>c.id==x.customerId)?.name||'',p=db.products.find(p=>p.id==x.productId)?.name||'';
- let w=window.open('','_blank'); if(!w)return;
- w.document.write('<!doctype html><html><head><title>'+x.invoice+'</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}.tot{text-align:right;font-weight:bold}</style></head><body><h1>BikePro Accessories</h1><div>Invoice: <b>'+x.invoice+'</b></div><div>Customer: '+c+'</div><div>Date: '+new Date(x.date).toLocaleString()+'</div><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>'+p+'</td><td>'+x.qty+'</td><td>Rs '+Number(x.rate).toLocaleString()+'</td><td>Rs '+Number(x.total).toLocaleString()+'</td></tr></table><p class="tot">Discount: Rs '+Number(x.discount||0).toLocaleString()+'</p><p class="tot">Grand Total: Rs '+Number(x.total).toLocaleString()+'</p><p class="tot">Paid: Rs '+Number(x.paid||0).toLocaleString()+'</p><p class="tot">Balance: Rs '+Number(x.balance||0).toLocaleString()+'</p></body></html>');
- w.document.close();w.focus();setTimeout(()=>w.print(),250);
-}
-function printPurchase(x){
- let p=db.products.find(p=>p.id==x.productId)?.name||'',w=window.open('','_blank');if(!w)return;
- w.document.write('<!doctype html><html><head><title>'+x.invoice+'</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}</style></head><body><h1>BikePro Accessories - Purchase</h1><p>Invoice: <b>'+x.invoice+'</b><br>Supplier: '+(x.supplier||'')+'<br>Date: '+new Date(x.date).toLocaleString()+'</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>'+p+'</td><td>'+x.qty+'</td><td>Rs '+Number(x.rate).toLocaleString()+'</td><td>Rs '+Number(x.total).toLocaleString()+'</td></tr></table><p>Paid: Rs '+Number(x.paid||0).toLocaleString()+'</p><p>Balance: Rs '+Number(x.balance||0).toLocaleString()+'</p></body></html>');
- w.document.close();w.focus();setTimeout(()=>w.print(),250);
-}
-function renderSupplierLedger(){
- let n=document.getElementById('supplierLedger')?.value,rows=(db.purchases||[]).filter(x=>x.supplier==n),bal=0;
- let body=rows.map(x=>{bal+=x.balance;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.invoice}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(x.balance)}</td></tr>`}).join('');
- document.getElementById('supplierLedgerBox').innerHTML=`<table><tr><th>Date</th><th>Invoice</th><th>Debit</th><th>Paid</th><th>Balance</th></tr>${body||'<tr><td colspan="5">No transactions</td></tr>'}</table>`;
-}
-function renderReports(){
- let sales=db.sales.reduce((a,x)=>a+x.total,0);
- let profit=db.sales.reduce((a,x)=>a+((x.rate-(x.cost||0))*x.qty-x.discount),0);
- let stock=db.products.reduce((a,x)=>a+(x.cost||0)*x.stock,0);
- let rec=db.sales.reduce((a,x)=>a+x.balance,0)-db.payments.reduce((a,x)=>a+x.amount,0);
- reportSales.textContent=money(sales);reportProfit.textContent=money(profit);reportStock.textContent=money(stock);reportReceivable.textContent=money(Math.max(0,rec));
-}
-function exportBackup(){
- let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='BikePro_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);toast('Backup downloaded');
-}
-function restoreBackup(e){
- let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.customers||!x.products)throw Error();db=x;save();toast('Backup restored')}catch(_){toast('Invalid backup file')}};r.readAsText(f);
-}
-function updateInvoiceLabels(){if(document.getElementById('saleNo'))saleNo.textContent='INV-'+db.settings.nextSale;if(document.getElementById('purchaseNo'))purchaseNo.textContent='PUR-'+db.settings.nextPurchase}
-
-function renderRecent(){recentSales.innerHTML=db.sales.slice(0,6).map(s=>{let c=db.customers.find(x=>x.id==s.customerId)?.name||'';let p=db.products.find(x=>x.id==s.productId)?.name||'';return `<div class="item"><b>${s.invoice||'INV'} • ${p} • ${money(s.total)}</b><small>${c} • Balance ${money(s.balance)} • ${new Date(s.date).toLocaleString()}</small><br><button class="secondary" onclick='printInvoice(${JSON.stringify(s)})'>🖨 Print Invoice</button></div>`}).join('')||'<div class="muted">No sales yet.</div>'}
-function renderCustomers(){customerList.innerHTML=db.customers.map(c=>{let bal=db.sales.filter(s=>s.customerId==c.id).reduce((a,s)=>a+s.balance,0)-db.payments.filter(p=>p.customerId==c.id).reduce((a,p)=>a+p.amount,0);return `<div class="item"><b>${c.name}</b><small>${c.phone||'No phone'} • Balance: ${money(Math.max(0,bal))}</small></div>`}).join('')}
-function renderProducts(){productList.innerHTML=db.products.map(p=>`<div class="item"><b>${p.name}</b><small>${p.cat||'General'} • Rate ${money(p.rate)} • Stock ${p.stock}</small></div>`).join('')}
-function renderPayments(){paymentList.innerHTML=db.payments.slice(0,15).map(p=>`<div class="item"><b>${db.customers.find(c=>c.id==p.customerId)?.name}</b><small>Payment ${money(p.amount)} • ${new Date(p.date).toLocaleString()}</small></div>`).join('')||'<div class="muted">No payments yet.</div>'}
-function renderLedger(){let c=+ledgerCustomer?.value;if(!c)return;let rows=[];db.sales.filter(s=>s.customerId==c).forEach(s=>rows.push({date:s.date,type:'Sale',debit:s.total,credit:s.paid,ref:db.products.find(p=>p.id==s.productId)?.name||''}));db.payments.filter(p=>p.customerId==c).forEach(p=>rows.push({date:p.date,type:'Payment',debit:0,credit:p.amount,ref:'Customer payment'}));rows.sort((a,b)=>new Date(a.date)-new Date(b.date));let bal=0;let body=rows.map(x=>{bal+=x.debit-x.credit;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.type}<br><small>${x.ref}</small></td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(bal)}</td></tr>`}).join('');ledgerBox.innerHTML=`<table><tr><th>Date</th><th>Transaction</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>${body}</table>`}
-refresh();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = 'https://vchkrwadfykredtcsxrb.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
-let supa = null, authSignup=false, currentUser=null, shopId=null;
-
-function cloudReady(){return SUPABASE_URL.startsWith('http') && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')}
-
-async function initCloud(){
- if(!cloudReady()){ document.getElementById('authOverlay').style.display='none'; return; }
- supa=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
- const {data}=await supa.auth.getSession();
- if(data.session) await enterCloud(data.session.user); else document.getElementById('authOverlay').style.display='flex';
- supa.auth.onAuthStateChange(async (_e,session)=>{ if(session) await enterCloud(session.user); });
-}
-function toggleAuth(){
- authSignup=!authSignup;
- authModeText.textContent=authSignup?'Create your shop owner account':'Sign in to your shop';
- authShop.style.display=authSignup?'block':'none';
- authBtn.textContent=authSignup?'Create Account':'Sign In';
- authToggle.textContent=authSignup?'Already have an account':'Create account';
- authError.textContent='';
-}
-async function authSubmit(){
- authError.textContent='';
- if(!supa){authError.textContent='Cloud is not configured yet. Add Supabase URL/key in this file.';return;}
- let email=authEmail.value.trim(),pw=authPassword.value;
- if(!email||pw.length<6){authError.textContent='Enter email and a password of at least 6 characters.';return;}
- if(authSignup){
-   let {data,error}=await supa.auth.signUp({email,password:pw});
-   if(error){authError.textContent=error.message;return;}
-   if(data.user){
-     let shop=(authShop.value.trim()||'My Bike Shop');
-     let {data:sh,error:se}=await supa.from('shops').insert({name:shop,owner_id:data.user.id}).select().single();
-     if(se){authError.textContent=se.message;return;}
-     shopId=sh.id; await supa.from('profiles').upsert({id:data.user.id,shop_id:shopId,role:'owner'});
-     authError.style.color='#166534';authError.textContent='Account created. Check email if confirmation is enabled.';
-   }
- } else {
-   let {data,error}=await supa.auth.signInWithPassword({email,password:pw});
-   if(error)authError.textContent=error.message; else if(data.session)await enterCloud(data.session.user);
- }
-}
-async function enterCloud(user){
- currentUser=user;
- let {data:profile}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).single();
- if(!profile){document.getElementById('authError').textContent='Profile not found. Run the supplied SQL setup first.';return;}
- shopId=profile.shop_id;
- authOverlay.style.display='none';userbar.style.display='flex';userEmail.textContent=user.email+' • '+profile.role;
- await loadCloud();
-}
-async function signOut(){if(supa)await supa.auth.signOut();location.reload()}
-
-async function loadCloud(){
- let [cs,ps,ss,pays,purs]=await Promise.all([
-  supa.from('customers').select('*').order('created_at'),
-  supa.from('products').select('*').order('created_at'),
-  supa.from('sales').select('*').order('created_at',{ascending:false}),
-  supa.from('payments').select('*').order('created_at',{ascending:false}),
-  supa.from('purchases').select('*').order('created_at',{ascending:false})
- ]);
- db.customers=(cs.data||[]).map(x=>({id:x.id,name:x.name,phone:x.phone||''}));
- db.products=(ps.data||[]).map(x=>({id:x.id,name:x.name,cat:x.category||'General',brand:x.brand||'',cost:Number(x.cost||0),rate:Number(x.sale_price||0),stock:Number(x.stock||0)}));
- db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:x.qty,rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- db.payments=(pays.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
- db.purchases=(purs.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:x.qty,rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
- refresh();
-}
-
-async function cloudSaveCustomer(obj){
- let {error}=await supa.from('customers').insert({shop_id:shopId,name:obj.name,phone:obj.phone||''});
- if(error)toast(error.message);else await loadCloud();
-}
-async function cloudSaveProduct(obj){
- let {error}=await supa.from('products').insert({shop_id:shopId,name:obj.name,category:obj.cat,brand:obj.brand,cost:obj.cost,sale_price:obj.rate,stock:obj.stock});
- if(error)toast(error.message);else await loadCloud();
-}
-async function cloudSaveSale(x,p){
- let {error}=await supa.from('sales').insert({shop_id:shopId,invoice_no:x.invoice,customer_id:x.customerId,product_id:x.productId,qty:x.qty,rate:x.rate,cost:x.cost,discount:x.discount,total:x.total,paid:x.paid,balance:x.balance});
- if(error){toast(error.message);return false}
- let {error:pe}=await supa.from('products').update({stock:p.stock}).eq('id',p.id).eq('shop_id',shopId);
- if(pe){toast(pe.message);return false}
- return true;
-}
-async function cloudSavePayment(x){
- let {error}=await supa.from('payments').insert({shop_id:shopId,customer_id:x.customerId,amount:x.amount});
- if(error){toast(error.message);return false} return true;
-}
-async function cloudSavePurchase(x,p){
- let {error}=await supa.from('purchases').insert({shop_id:shopId,invoice_no:x.invoice,supplier:x.supplier,product_id:x.productId,qty:x.qty,rate:x.rate,total:x.total,paid:x.paid,balance:x.balance});
- if(error){toast(error.message);return false}
- let {error:pe}=await supa.from('products').update({stock:p.stock,cost:p.cost}).eq('id',p.id).eq('shop_id',shopId);
- if(pe){toast(pe.message);return false} return true;
-}
-</script>
-
-<script>
-const localAddCustomer=addCustomer, localAddProduct=addProduct, localSaveSale=saveSale, localSavePayment=savePayment, localSavePurchase=savePurchase;
-addCustomer=async function(){let n=custName.value.trim();if(!n)return toast('Enter customer name');let o={name:n,phone:custPhone.value};if(cloudReady()&&supa&&shopId){await cloudSaveCustomer(o);custName.value='';custPhone.value='';toast('Customer saved to cloud')}else localAddCustomer();}
-addProduct=async function(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');let o={name:n,cat:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,rate:r,stock:s};if(cloudReady()&&supa&&shopId){await cloudSaveProduct(o);prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';toast('Product saved to cloud')}else localAddProduct();}
-saveSale=async function(){
- let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
- if(!p||q<1||q>p.stock)return toast('Check product/quantity');
- let invoice='INV-'+(db.sales.length+1001),x={id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)};
- p.stock-=q;
- if(cloudReady()&&supa&&shopId){if(await cloudSaveSale(x,p)){await loadCloud();toast(invoice+' saved to cloud');printInvoice(x);show('dashboard')}}else localSaveSale();
-}
-savePayment=async function(){let c=+payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');let x={customerId:c,amount:a};if(cloudReady()&&supa&&shopId){if(await cloudSavePayment(x)){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}else localSavePayment();}
-savePurchase=async function(){
- let pid=+purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,paidv=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();
- if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');
- let x={id:Date.now(),invoice:'PUR-'+(db.purchases.length+5001),date:new Date().toISOString(),supplier:sn,productId:pid,qty:q,rate:r,total:q*r,paid:Math.min(paidv,q*r),balance:Math.max(0,q*r-paidv)};p.stock+=q;p.cost=r;
- if(cloudReady()&&supa&&shopId){if(await cloudSavePurchase(x,p)){await loadCloud();toast(x.invoice+' saved to cloud');printPurchase(x)}}else localSavePurchase();
-}
-window.addEventListener('load',initCloud);
-</script>
-</body></html>
+  <div id="invoiceModal" class="modal hidden"><div class="modal-panel wide"><div class="modal-head"><h3>Invoice Preview</h3><button id="closeInvoice" class="icon-btn">×</button></div><div id="invoicePreview"></div><div class="modal-actions"><button id="printInvoiceBtn" class="btn primary">🖨 Print Invoice</button><button id="closeInvoice2" class="btn secondary">Close</button></div></div></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
