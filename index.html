@@ -1,108 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
-  <title>BikePro ERP</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#0f172a" name="theme-color"/>
+<title>BikePro ERP</title>
+
+<link href="styles.css" rel="stylesheet"/></head>
 <body>
-  <div id="authOverlay" class="overlay">
-    <div class="auth-card">
-      <div class="brand-mark">🏍️</div>
-      <h1>BikePro ERP</h1>
-      <p id="authModeText" class="muted">Sign in to your cloud shop</p>
-      <form id="authForm">
-        <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
-        <label>Password<input id="authPassword" type="password" autocomplete="current-password" minlength="6" required></label>
-        <label id="shopNameWrap" class="hidden">Shop name<input id="authShop" autocomplete="organization"></label>
-        <div id="authError" class="form-error" role="alert"></div>
-        <button id="authBtn" class="btn primary full" type="submit">Sign In</button>
-      </form>
-      <button id="authToggle" class="btn secondary full" type="button">Create account</button>
-      <button id="offlineBtn" class="btn ghost full" type="button">Continue Offline</button>
-      <p class="auth-note">Offline data stays on this device. Cloud data is stored in your Supabase shop.</p>
-    </div>
-  </div>
+<div class="overlay" id="authOverlay">
+<div class="auth-card">
+<div class="brand-mark">🏍️</div>
+<h1>BikePro ERP</h1>
+<p class="muted" id="authModeText">Sign in to your cloud shop</p>
+<form id="authForm">
+<label>Email<input autocomplete="email" id="authEmail" required="" type="email"/></label>
+<label>Password<input autocomplete="current-password" id="authPassword" minlength="6" required="" type="password"/></label>
+<label class="hidden" id="shopNameWrap">Shop name<input autocomplete="organization" id="authShop"/></label>
+<div class="form-error" id="authError" role="alert"></div>
+<button class="btn primary full" id="authBtn" type="submit">Sign In</button>
+</form>
+<button class="btn secondary full" id="authToggle" type="button">Create account</button>
+<button class="btn ghost full" id="offlineBtn" type="button">Continue Offline</button>
+<p class="auth-note">Offline data stays on this device. Cloud data is stored in your Supabase shop.</p>
+</div>
+</div>
+<div class="shell hidden" id="appShell">
+<header class="topbar">
+<div class="topbar-inner">
+<div>
+<div class="brand">🏍️ BikePro <span>ERP</span></div>
+<div class="sub" id="shopSubtitle">Bike Accessories • Mobile Shop Management</div>
+</div>
+<div class="top-actions">
+<span class="badge" id="connectionBadge">Offline</span>
+<button class="btn small secondary" id="connectBtn">Connect Cloud</button>
+<button class="btn small secondary hidden" id="signOutBtn">Sign out</button>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><span>Today's Sales</span><strong id="todaySales">Rs 0</strong></div>
+<div class="stat"><span>Receivable</span><strong id="receivable">Rs 0</strong></div>
+<div class="stat desktop-only"><span>Stock Value</span><strong id="stockValue">Rs 0</strong></div>
+<div class="stat desktop-only"><span>Low Stock</span><strong id="lowStockCount">0</strong></div>
+</div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+<button class="side-nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+<button class="side-nav" data-page="sales">🧾 <span>Sales / POS</span></button>
+<button class="side-nav" data-page="purchases">📥 <span>Purchases</span></button>
+<button class="side-nav" data-page="customers">👥 <span>Customers</span></button>
+<button class="side-nav" data-page="products">📦 <span>Inventory</span></button>
+<button class="side-nav" data-page="payments">💵 <span>Payments</span></button>
+<button class="side-nav" data-page="ledger">📒 <span>Ledgers</span></button>
+<button class="side-nav" data-page="reports">📊 <span>Reports</span></button>
+<button class="side-nav" data-page="returns">↩️ <span>Returns</span></button>
+<button class="side-nav" data-page="expenses">💳 <span>Expenses</span></button>
+<button class="side-nav" data-page="settings">⚙️ <span>Settings</span></button>
+</aside>
+<main class="content">
+<section class="page active" id="dashboard">
+<div class="page-head"><div><h2>Dashboard</h2><p class="muted">A clean overview of your shop.</p></div><div class="quick-actions"><button class="btn primary" data-page="sales">＋ New Sale</button><button class="btn secondary" data-page="purchases">＋ Purchase</button></div></div>
+<div class="metric-grid"><div class="card metric"><span>Sales today</span><strong id="dashSales">Rs 0</strong></div><div class="card metric"><span>Gross profit</span><strong id="dashProfit">Rs 0</strong></div><div class="card metric"><span>Receivables</span><strong id="dashReceivable">Rs 0</strong></div><div class="card metric"><span>Payables</span><strong id="dashPayable">Rs 0</strong></div></div>
+<div class="two-col"><div class="card"><div class="card-head"><h3>Recent Sales</h3><button class="link-btn" data-page="sales">View all</button></div><div class="list" id="recentSales"></div></div><div class="card"><div class="card-head"><h3>Low Stock</h3><button class="link-btn" data-page="products">Inventory</button></div><div class="list" id="lowStockList"></div></div></div>
+</section>
+<section class="page" id="sales">
+<div class="page-head"><div><h2>Sales / POS</h2><p class="muted">Build one invoice with multiple products.</p></div><div class="invoice-chip">Invoice <strong id="saleInvoiceNo">INV-1001</strong></div></div>
+<div class="sales-layout">
+<div class="card">
+<div class="form-grid two"><label>Customer<select id="saleCustomer"></select></label><label>Invoice date<input id="saleDate" type="datetime-local"/></label></div>
+<div class="add-line"><label>Product<select id="saleProduct"></select></label><label>Qty<input id="saleQty" min="1" step="1" type="number" value="1"/></label><label>Rate<input id="saleRate" min="0" step="0.01" type="number"/></label><button class="btn primary" id="addSaleItem">Add item</button></div>
+<div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="saleCartBody"></tbody></table><div class="empty" id="saleCartEmpty">No products added yet.</div></div>
+<div class="form-grid two totals-inputs"><label>Invoice Discount<input id="saleDiscount" min="0" step="0.01" type="number" value="0"/></label><label>Paid<input id="salePaid" min="0" step="0.01" type="number" value="0"/></label></div>
+<div class="summary"><div><span>Subtotal</span><strong id="saleSubtotal">Rs 0</strong></div><div><span>Discount</span><strong id="saleDiscountView">Rs 0</strong></div><div class="grand"><span>Total</span><strong id="saleTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="saleBalance">Rs 0</strong></div></div>
+<button class="btn primary full" id="saveSaleBtn">Save Sale &amp; Preview Invoice</button>
+</div>
+<div class="card side-help"><h3>Sale checklist</h3><ul><li>Choose customer</li><li>Add one or more products</li><li>Check stock and discount</li><li>Enter amount received</li><li>Save and print from preview</li></ul></div>
+</div>
+</section>
+<section class="page" id="purchases">
+<div class="page-head"><div><h2>Purchases</h2><p class="muted">Receive multiple products in one supplier invoice.</p></div><div class="invoice-chip">Purchase <strong id="purchaseInvoiceNo">PUR-5001</strong></div></div>
+<div class="sales-layout"><div class="card"><div class="form-grid two"><label>Supplier<input id="purchaseSupplier"/></label><label>Purchase date<input id="purchaseDate" type="datetime-local"/></label></div><div class="add-line"><label>Product<select id="purchaseProduct"></select></label><label>Qty<input id="purchaseQty" min="1" step="1" type="number" value="1"/></label><label>Rate<input id="purchaseRate" min="0" step="0.01" type="number"/></label><button class="btn primary" id="addPurchaseItem">Add item</button></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="purchaseCartBody"></tbody></table><div class="empty" id="purchaseCartEmpty">No products added yet.</div></div><label>Paid to Supplier<input id="purchasePaid" min="0" step="0.01" type="number" value="0"/></label><div class="summary"><div class="grand"><span>Total</span><strong id="purchaseTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="purchaseBalance">Rs 0</strong></div></div><button class="btn primary full" id="savePurchaseBtn">Save Purchase</button></div><div class="card"><h3>Recent Purchases</h3><div class="list" id="purchaseList"></div></div></div>
+</section>
+<section class="page" id="customers"><div class="page-head"><div><h2>Customers</h2><p class="muted">Customers and their outstanding balances.</p></div></div><div class="card form-grid three"><label>Name<input id="custName"/></label><label>Phone<input id="custPhone"/></label><label> <button class="btn primary full" id="addCustomerBtn">Add Customer</button></label></div><div class="list-grid" id="customerList"></div></section>
+<section class="page" id="products"><div class="page-head"><div><h2>Inventory</h2><p class="muted">Products, pricing, stock and reorder levels.</p></div></div><div class="card form-grid six"><label>Name<input id="prodName"/></label><label>Category<input id="prodCategory"/></label><label>Brand<input id="prodBrand"/></label><label>Cost<input id="prodCost" min="0" step="0.01" type="number"/></label><label>Sale price<input id="prodRate" min="0" step="0.01" type="number"/></label><label>Opening stock<input id="prodStock" min="0" step="1" type="number"/></label><label>Reorder level<input id="prodReorder" min="0" step="1" type="number" value="5"/></label><label> <button class="btn primary full" id="addProductBtn">Add Product</button></label></div><div class="list-grid" id="productList"></div></section>
+<section class="page" id="payments"><div class="page-head"><div><h2>Payments</h2><p class="muted">Customer receipts and supplier payments.</p></div></div><div class="two-col"><div class="card"><h3>Customer Payment</h3><div class="form-grid three"><label>Customer<select id="payCustomer"></select></label><label>Amount<input id="payAmount" min="0.01" step="0.01" type="number"/></label><label> <button class="btn primary full" id="savePaymentBtn">Save Payment</button></label></div><div class="list" id="paymentList"></div></div><div class="card"><h3>Supplier Payment</h3><div class="form-grid three"><label>Supplier<input id="supplierPaySupplier" placeholder="Supplier name"/></label><label>Amount<input id="supplierPayAmount" min="0.01" step="0.01" type="number"/></label><label> <button class="btn primary full" id="saveSupplierPaymentBtn">Pay Supplier</button></label></div><div class="list" id="supplierPaymentList"></div></div></div></section>
+<section class="page" id="ledger"><div class="page-head"><div><h2>Customer Ledger</h2><p class="muted">Invoice-level running balance.</p></div></div><div class="card"><label>Customer<select id="ledgerCustomer"></select></label><div class="table-wrap" id="ledgerBox"></div></div></section>
+<section class="page" id="reports"><div class="page-head"><div><h2>Reports</h2><p class="muted">Sales, profit, stock and outstanding balances.</p></div></div><div class="metric-grid"><div class="card metric"><span>Sales</span><strong id="reportSales">Rs 0</strong></div><div class="card metric"><span>Gross Profit</span><strong id="reportProfit">Rs 0</strong></div><div class="card metric"><span>Stock Value</span><strong id="reportStock">Rs 0</strong></div><div class="card metric"><span>Receivable</span><strong id="reportReceivable">Rs 0</strong></div><div class="card metric"><span>Payable</span><strong id="reportPayable">Rs 0</strong></div></div><div class="card"><h3>Backup &amp; Restore</h3><div class="actions"><button class="btn primary" id="backupBtn">Export Backup</button><button class="btn secondary" id="restoreBtn">Restore Backup</button><input accept="application/json" hidden="" id="restoreFile" type="file"/></div></div></section>
+<section class="page" id="returns"><div class="page-head"><div><h2>Sales &amp; Purchase Returns</h2><p class="muted">Return stock safely and keep customer/supplier balances accurate.</p></div></div><div class="two-col"><div class="card"><h3>Sales Return</h3><div class="form-grid two"><label>Invoice<select id="returnSaleInvoice"></select></label><label>Product<select id="returnSaleProduct"></select></label><label>Qty<input id="returnSaleQty" min="1" step="1" type="number" value="1"/></label><label>Reason<input id="returnSaleReason" placeholder="Defective / wrong item"/></label></div><button class="btn primary full" id="saveSaleReturnBtn">Process Sales Return</button></div><div class="card"><h3>Purchase Return</h3><div class="form-grid two"><label>Purchase Invoice<select id="returnPurchaseInvoice"></select></label><label>Product<select id="returnPurchaseProduct"></select></label><label>Qty<input id="returnPurchaseQty" min="1" step="1" type="number" value="1"/></label><label>Reason<input id="returnPurchaseReason" placeholder="Damaged / supplier return"/></label></div><button class="btn primary full" id="savePurchaseReturnBtn">Process Purchase Return</button></div></div><div class="card"><h3>Recent Returns</h3><div class="list" id="returnList"></div></div></section>
+<section class="page" id="expenses"><div class="page-head"><div><h2>Expenses</h2><p class="muted">Record rent, electricity, salaries, transport, repairs and other operating costs.</p></div></div><div class="card form-grid four"><label>Date<input id="expenseDate" type="datetime-local"/></label><label>Category<select id="expenseCategory"><option>Rent</option><option>Electricity</option><option>Salaries</option><option>Transport</option><option>Workshop / Repair</option><option>Utilities</option><option>Other</option></select></label><label>Description<input id="expenseDescription" placeholder="e.g. August shop rent"/></label><label>Amount<input id="expenseAmount" min="0.01" step="0.01" type="number"/></label><label> <button class="btn primary full" id="saveExpenseBtn">Save Expense</button></label></div><div class="metric-grid"><div class="card metric"><span>Total Expenses</span><strong id="expenseTotal">Rs 0</strong></div><div class="card metric"><span>Net Profit</span><strong id="netProfit">Rs 0</strong></div></div><div class="card"><h3>Expense History</h3><div class="list" id="expenseList"></div></div></section>
+<section class="page" id="settings"><div class="page-head"><div><h2>Settings</h2><p class="muted">Shop information and invoice preferences.</p></div></div><div class="card form-grid two"><label>Shop name<input id="settingShopName"/></label><label>Phone<input id="settingPhone"/></label><label>Address<textarea id="settingAddress"></textarea></label><label>Invoice footer<textarea id="settingFooter"></textarea></label><label>Currency<input id="settingCurrency"/></label><label>Invoice prefix<input id="settingInvoicePrefix"/></label><label>Low stock default<input id="settingReorder" min="0" type="number"/></label><label> <button class="btn primary full" id="saveSettingsBtn">Save Settings</button></label></div></section>
+</main>
+</div>
+<nav aria-label="Mobile navigation" class="mobile-nav"><button data-page="dashboard">⌂<span>Home</span></button><button data-page="sales">🧾<span>Sales</span></button><button data-page="purchases">📥<span>Purchase</span></button><button data-page="products">📦<span>Stock</span></button><button data-page="customers">👥<span>Customers</span></button><button data-page="more">☰<span>More</span></button></nav>
+</div>
+<div class="sheet hidden" id="moreSheet"><div class="sheet-panel"><div class="sheet-head"><h3>More</h3><button class="icon-btn" id="closeSheet">×</button></div><div class="sheet-grid"><button data-page="payments">💵 Payments</button><button data-page="ledger">📒 Ledger</button><button data-page="reports">📊 Reports</button><button data-page="returns">↩️ Returns</button><button data-page="expenses">💳 Expenses</button><button data-page="settings">⚙️ Settings</button></div></div></div>
+<div class="modal hidden" id="invoiceModal"><div class="modal-panel wide"><div class="modal-head"><h3>Invoice Preview</h3><button class="icon-btn" id="closeInvoice">×</button></div><div id="invoicePreview"></div><div class="modal-actions"><button class="btn primary" id="printInvoiceBtn">🖨 Print Invoice</button><button class="btn secondary" id="closeInvoice2">Close</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <div id="appShell" class="shell hidden">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div>
-          <div class="brand">🏍️ BikePro <span>ERP</span></div>
-          <div class="sub" id="shopSubtitle">Bike Accessories • Mobile Shop Management</div>
-        </div>
-        <div class="top-actions">
-          <span id="connectionBadge" class="badge">Offline</span>
-          <button id="connectBtn" class="btn small secondary">Connect Cloud</button>
-          <button id="signOutBtn" class="btn small secondary hidden">Sign out</button>
-        </div>
-      </div>
-      <div class="stats">
-        <div class="stat"><span>Today's Sales</span><strong id="todaySales">Rs 0</strong></div>
-        <div class="stat"><span>Receivable</span><strong id="receivable">Rs 0</strong></div>
-        <div class="stat desktop-only"><span>Stock Value</span><strong id="stockValue">Rs 0</strong></div>
-        <div class="stat desktop-only"><span>Low Stock</span><strong id="lowStockCount">0</strong></div>
-      </div>
-    </header>
-
-    <div class="layout">
-      <aside class="sidebar">
-        <button class="side-nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
-        <button class="side-nav" data-page="sales">🧾 <span>Sales / POS</span></button>
-        <button class="side-nav" data-page="purchases">📥 <span>Purchases</span></button>
-        <button class="side-nav" data-page="customers">👥 <span>Customers</span></button>
-        <button class="side-nav" data-page="products">📦 <span>Inventory</span></button>
-        <button class="side-nav" data-page="payments">💵 <span>Payments</span></button>
-        <button class="side-nav" data-page="ledger">📒 <span>Ledgers</span></button>
-        <button class="side-nav" data-page="reports">📊 <span>Reports</span></button>
-        <button class="side-nav" data-page="settings">⚙️ <span>Settings</span></button>
-      </aside>
-
-      <main class="content">
-        <section id="dashboard" class="page active">
-          <div class="page-head"><div><h2>Dashboard</h2><p class="muted">A clean overview of your shop.</p></div><div class="quick-actions"><button class="btn primary" data-page="sales">＋ New Sale</button><button class="btn secondary" data-page="purchases">＋ Purchase</button></div></div>
-          <div class="metric-grid"><div class="card metric"><span>Sales today</span><strong id="dashSales">Rs 0</strong></div><div class="card metric"><span>Gross profit</span><strong id="dashProfit">Rs 0</strong></div><div class="card metric"><span>Receivables</span><strong id="dashReceivable">Rs 0</strong></div><div class="card metric"><span>Payables</span><strong id="dashPayable">Rs 0</strong></div></div>
-          <div class="two-col"><div class="card"><div class="card-head"><h3>Recent Sales</h3><button class="link-btn" data-page="sales">View all</button></div><div id="recentSales" class="list"></div></div><div class="card"><div class="card-head"><h3>Low Stock</h3><button class="link-btn" data-page="products">Inventory</button></div><div id="lowStockList" class="list"></div></div></div>
-        </section>
-
-        <section id="sales" class="page">
-          <div class="page-head"><div><h2>Sales / POS</h2><p class="muted">Build one invoice with multiple products.</p></div><div class="invoice-chip">Invoice <strong id="saleInvoiceNo">INV-1001</strong></div></div>
-          <div class="sales-layout">
-            <div class="card">
-              <div class="form-grid two"><label>Customer<select id="saleCustomer"></select></label><label>Invoice date<input id="saleDate" type="datetime-local"></label></div>
-              <div class="add-line"><label>Product<select id="saleProduct"></select></label><label>Qty<input id="saleQty" type="number" min="1" step="1" value="1"></label><label>Rate<input id="saleRate" type="number" min="0" step="0.01"></label><button id="addSaleItem" class="btn primary">Add item</button></div>
-              <div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="saleCartBody"></tbody></table><div id="saleCartEmpty" class="empty">No products added yet.</div></div>
-              <div class="form-grid two totals-inputs"><label>Invoice Discount<input id="saleDiscount" type="number" min="0" step="0.01" value="0"></label><label>Paid<input id="salePaid" type="number" min="0" step="0.01" value="0"></label></div>
-              <div class="summary"><div><span>Subtotal</span><strong id="saleSubtotal">Rs 0</strong></div><div><span>Discount</span><strong id="saleDiscountView">Rs 0</strong></div><div class="grand"><span>Total</span><strong id="saleTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="saleBalance">Rs 0</strong></div></div>
-              <button id="saveSaleBtn" class="btn primary full">Save Sale & Preview Invoice</button>
-            </div>
-            <div class="card side-help"><h3>Sale checklist</h3><ul><li>Choose customer</li><li>Add one or more products</li><li>Check stock and discount</li><li>Enter amount received</li><li>Save and print from preview</li></ul></div>
-          </div>
-        </section>
-
-        <section id="purchases" class="page">
-          <div class="page-head"><div><h2>Purchases</h2><p class="muted">Receive multiple products in one supplier invoice.</p></div><div class="invoice-chip">Purchase <strong id="purchaseInvoiceNo">PUR-5001</strong></div></div>
-          <div class="sales-layout"><div class="card"><div class="form-grid two"><label>Supplier<input id="purchaseSupplier"></label><label>Purchase date<input id="purchaseDate" type="datetime-local"></label></div><div class="add-line"><label>Product<select id="purchaseProduct"></select></label><label>Qty<input id="purchaseQty" type="number" min="1" step="1" value="1"></label><label>Rate<input id="purchaseRate" type="number" min="0" step="0.01"></label><button id="addPurchaseItem" class="btn primary">Add item</button></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th><th></th></tr></thead><tbody id="purchaseCartBody"></tbody></table><div id="purchaseCartEmpty" class="empty">No products added yet.</div></div><label>Paid to Supplier<input id="purchasePaid" type="number" min="0" step="0.01" value="0"></label><div class="summary"><div class="grand"><span>Total</span><strong id="purchaseTotal">Rs 0</strong></div><div class="balance"><span>Balance</span><strong id="purchaseBalance">Rs 0</strong></div></div><button id="savePurchaseBtn" class="btn primary full">Save Purchase</button></div><div class="card"><h3>Recent Purchases</h3><div id="purchaseList" class="list"></div></div></div>
-        </section>
-
-        <section id="customers" class="page"><div class="page-head"><div><h2>Customers</h2><p class="muted">Customers and their outstanding balances.</p></div></div><div class="card form-grid three"><label>Name<input id="custName"></label><label>Phone<input id="custPhone"></label><label>&nbsp;<button id="addCustomerBtn" class="btn primary full">Add Customer</button></label></div><div id="customerList" class="list-grid"></div></section>
-        <section id="products" class="page"><div class="page-head"><div><h2>Inventory</h2><p class="muted">Products, pricing, stock and reorder levels.</p></div></div><div class="card form-grid six"><label>Name<input id="prodName"></label><label>Category<input id="prodCategory"></label><label>Brand<input id="prodBrand"></label><label>Cost<input id="prodCost" type="number" min="0" step="0.01"></label><label>Sale price<input id="prodRate" type="number" min="0" step="0.01"></label><label>Opening stock<input id="prodStock" type="number" min="0" step="1"></label><label>Reorder level<input id="prodReorder" type="number" min="0" step="1" value="5"></label><label>&nbsp;<button id="addProductBtn" class="btn primary full">Add Product</button></label></div><div id="productList" class="list-grid"></div></section>
-        <section id="payments" class="page"><div class="page-head"><div><h2>Payments</h2><p class="muted">Receive customer payments and pay supplier balances with automatic allocation.</p></div></div><div class="payment-grid"><div class="card"><h3>Customer Payment</h3><div class="form-grid three"><label>Customer<select id="payCustomer"></select></label><label>Amount<input id="payAmount" type="number" min="0.01" step="0.01"></label><label>&nbsp;<button id="savePaymentBtn" class="btn primary full">Save Payment</button></label></div><div id="paymentList" class="list"></div></div><div class="card"><h3>Supplier Payment</h3><div class="form-grid three"><label>Supplier<select id="supplierPaySupplier"></select></label><label>Amount<input id="supplierPayAmount" type="number" min="0.01" step="0.01"></label><label>&nbsp;<button id="saveSupplierPaymentBtn" class="btn primary full">Pay Supplier</button></label></div><div id="supplierBalanceList" class="list"></div><h3 style="margin-top:18px">Payment History</h3><div id="supplierPaymentList" class="list"></div></div></div></section>
-        <section id="ledger" class="page"><div class="page-head"><div><h2>Customer Ledger</h2><p class="muted">Invoice-level running balance.</p></div></div><div class="card"><label>Customer<select id="ledgerCustomer"></select></label><div id="ledgerBox" class="table-wrap"></div></div></section>
-        <section id="reports" class="page"><div class="page-head"><div><h2>Reports</h2><p class="muted">Sales, profit, stock and outstanding balances.</p></div></div><div class="metric-grid"><div class="card metric"><span>Sales</span><strong id="reportSales">Rs 0</strong></div><div class="card metric"><span>Gross Profit</span><strong id="reportProfit">Rs 0</strong></div><div class="card metric"><span>Stock Value</span><strong id="reportStock">Rs 0</strong></div><div class="card metric"><span>Receivable</span><strong id="reportReceivable">Rs 0</strong></div><div class="card metric"><span>Payable</span><strong id="reportPayable">Rs 0</strong></div></div><div class="card"><h3>Backup & Restore</h3><div class="actions"><button id="backupBtn" class="btn primary">Export Backup</button><button id="restoreBtn" class="btn secondary">Restore Backup</button><input id="restoreFile" type="file" accept="application/json" hidden></div></div></section>
-        <section id="settings" class="page"><div class="page-head"><div><h2>Settings</h2><p class="muted">Shop information and invoice preferences.</p></div></div><div class="card form-grid two"><label>Shop name<input id="settingShopName"></label><label>Phone<input id="settingPhone"></label><label>Address<textarea id="settingAddress"></textarea></label><label>Invoice footer<textarea id="settingFooter"></textarea></label><label>Currency<input id="settingCurrency"></label><label>Invoice prefix<input id="settingInvoicePrefix"></label><label>Low stock default<input id="settingReorder" type="number" min="0"></label><label>&nbsp;<button id="saveSettingsBtn" class="btn primary full">Save Settings</button></label></div></section>
-      </main>
-    </div>
-    <nav class="mobile-nav" aria-label="Mobile navigation"><button data-page="dashboard">⌂<span>Home</span></button><button data-page="sales">🧾<span>Sales</span></button><button data-page="purchases">📥<span>Purchase</span></button><button data-page="products">📦<span>Stock</span></button><button data-page="customers">👥<span>Customers</span></button><button data-page="more">☰<span>More</span></button></nav>
-  </div>
-
-  <div id="moreSheet" class="sheet hidden"><div class="sheet-panel"><div class="sheet-head"><h3>More</h3><button id="closeSheet" class="icon-btn">×</button></div><div class="sheet-grid"><button data-page="payments">💵 Payments</button><button data-page="ledger">📒 Ledger</button><button data-page="reports">📊 Reports</button><button data-page="settings">⚙️ Settings</button></div></div></div>
-
-  <div id="invoiceModal" class="modal hidden"><div class="modal-panel wide"><div class="modal-head"><h3>Invoice Preview</h3><button id="closeInvoice" class="icon-btn">×</button></div><div id="invoicePreview"></div><div class="modal-actions"><button id="printInvoiceBtn" class="btn primary">🖨 Print Invoice</button><button id="closeInvoice2" class="btn secondary">Close</button></div></div></div>
-  <div id="toast" class="toast" role="status"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
-</body>
+<script src="app.js"></script></body>
 </html>
