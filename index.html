@@ -1,474 +1,406 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
-<title>BikePro ERP — Bike Accessories & Workshop</title>
+<title>BikePro ERP</title>
 <style>
-:root{
- --bg:#f4f7fb;--surface:#fff;--surface2:#f8fafc;--text:#0f172a;--muted:#64748b;
- --line:#e2e8f0;--primary:#0f172a;--accent:#2563eb;--accent2:#1d4ed8;--success:#15803d;
- --danger:#dc2626;--warning:#d97706;--shadow:0 8px 30px rgba(15,23,42,.07);--radius:18px
-}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Arial;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}button{cursor:pointer}
-.app{min-height:100vh}.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;background:#0b1220;color:#fff;padding:22px 14px;z-index:20;display:flex;flex-direction:column}
-.logo{display:flex;gap:11px;align-items:center;padding:4px 10px 25px}.logo-icon{width:42px;height:42px;border-radius:13px;background:#fff;color:#0b1220;display:grid;place-items:center;font-size:23px}.logo b{font-size:20px}.logo small{display:block;color:#94a3b8;font-size:11px;margin-top:2px}
-.navgroup{display:grid;gap:5px}.navbtn{border:0;background:transparent;color:#aab5c7;text-align:left;padding:11px 13px;border-radius:12px;display:flex;gap:12px;align-items:center;font-weight:650;font-size:13px}.navbtn:hover,.navbtn.active{background:#1e293b;color:#fff}.navbtn .ico{width:22px;text-align:center;font-size:17px}
-.sidebar-footer{margin-top:auto;color:#64748b;font-size:11px;padding:12px}
-.main{margin-left:250px;min-height:100vh}.topbar{height:72px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}.top-title b{font-size:18px}.top-title small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.top-actions{display:flex;gap:8px;align-items:center}.iconbtn,.btn{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:11px;padding:10px 13px;font-weight:700}.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}.btn.success{background:#ecfdf3;color:#166534;border-color:#bbf7d0}.btn.danger{background:#fef2f2;color:#b91c1c;border-color:#fecaca}.btn.sm{padding:7px 9px;font-size:12px}.content{padding:25px 28px 90px;max-width:1500px;margin:auto}.page{display:none}.page.active{display:block}.pagehead{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:20px}.pagehead h1{font-size:25px;margin:0 0 5px}.pagehead p{margin:0;color:var(--muted);font-size:13px}.head-actions{display:flex;gap:8px;flex-wrap:wrap}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.statcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.statcard .label{font-size:12px;color:var(--muted);font-weight:700}.statcard .value{font-size:25px;font-weight:850;margin-top:7px}.statcard .sub{font-size:11px;color:var(--muted);margin-top:5px}.statcard .sicon{position:absolute;right:15px;top:15px;font-size:23px;opacity:.18}
-.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-top:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.panel h3{margin:0;font-size:15px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.muted{color:var(--muted);font-size:12px}.list{display:grid;gap:9px}.listitem{border:1px solid var(--line);background:var(--surface2);border-radius:13px;padding:12px}.listitem strong{font-size:13px}.listitem small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
-.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.formgrid.three{grid-template-columns:repeat(3,1fr)}.field label{display:block;font-size:11px;font-weight:800;color:#475569;margin:0 0 6px}.field input,.field select,.field textarea,.searchbox{width:100%;border:1px solid #d7dee8;border-radius:11px;padding:11px 12px;background:#fff;color:var(--text);outline:none}.field input:focus,.field select:focus,.field textarea:focus,.searchbox:focus{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}.field textarea{min-height:80px;resize:vertical}.full{grid-column:1/-1}.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
-.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.table th{background:var(--surface2);color:#475569;font-size:11px;text-transform:uppercase;letter-spacing:.04em}.table tr:last-child td{border-bottom:0}.right{text-align:right!important}.badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:800}.badge.green{background:#dcfce7;color:#166534}.badge.red{background:#fee2e2;color:#991b1b}.badge.amber{background:#fef3c7;color:#92400e}.badge.blue{background:#dbeafe;color:#1e40af}.badge.gray{background:#e2e8f0;color:#475569}
-.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.mini{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:13px}.mini span{display:block;color:var(--muted);font-size:11px}.mini b{display:block;font-size:18px;margin-top:4px}
-.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}.toolbar .left,.toolbar .rightside{display:flex;gap:8px;align-items:center}.searchbox{max-width:300px}
-.cart{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.cartline{display:grid;grid-template-columns:2fr .7fr .9fr .9fr 38px;gap:8px;align-items:end;padding:10px 0;border-bottom:1px solid var(--line)}.cartline:first-child{padding-top:0}.carttotal{background:#0f172a;color:#fff;border-radius:16px;padding:17px}.carttotal .big{font-size:29px;font-weight:900}.carttotal .split{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #334155;font-size:12px}.carttotal .split:last-child{border-bottom:0}
-.progress{height:7px;background:#e2e8f0;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;background:var(--accent);border-radius:99px}
-.repair-status{display:flex;gap:6px;flex-wrap:wrap}.statusbtn{border:1px solid var(--line);background:#fff;padding:7px 10px;border-radius:9px;font-size:11px;font-weight:800}.statusbtn.active{background:#0f172a;color:#fff;border-color:#0f172a}
-.mobile-menu{display:none}.bottomnav{display:none}
-.toast{position:fixed;right:24px;bottom:24px;background:#0f172a;color:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 10px 35px #0003;z-index:100;display:none;font-size:13px}.toast.show{display:block;animation:fade 1.8s both}@keyframes fade{0%,100%{opacity:0;transform:translateY(8px)}10%,85%{opacity:1;transform:none}}
-.modal{position:fixed;inset:0;background:#0f172a88;display:none;align-items:center;justify-content:center;padding:20px;z-index:80}.modal.open{display:flex}.modalbox{background:#fff;border-radius:20px;width:min(720px,100%);max-height:90vh;overflow:auto;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modalhead h2{margin:0;font-size:18px}
-.cloud-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#f8fafc;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;color:#475569}.cloud-pill.online{color:#166534;background:#ecfdf5;border-color:#bbf7d0}.cloud-pill.offline{color:#92400e;background:#fffbeb;border-color:#fde68a}.overlay{position:fixed;inset:0;background:#f1f5f9;display:none;align-items:center;justify-content:center;z-index:200;padding:20px}.loginbox{width:min(410px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 20px 70px #0002}.loginbox h1{margin:0 0 5px}.loginbox p{color:var(--muted);font-size:12px}.error{color:#b91c1c;font-size:12px;min-height:18px}
-@media(max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}.grid2,.cart{grid-template-columns:1fr}.grid3{grid-template-columns:1fr 1fr}}
-@media(max-width:760px){
- .sidebar{display:none}.main{margin-left:0}.topbar{height:64px;padding:0 15px}.mobile-menu{display:block}.top-actions .btn span{display:none}.content{padding:17px 14px 88px}.pagehead{align-items:flex-start;flex-direction:column}.pagehead h1{font-size:22px}.cards{grid-template-columns:1fr 1fr;gap:10px}.statcard{padding:14px}.statcard .value{font-size:20px}.grid3,.formgrid,.formgrid.three{grid-template-columns:1fr}.panel{padding:14px}.bottomnav{position:fixed;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:30;padding-bottom:env(safe-area-inset-bottom)}.bottomnav button{border:0;background:#fff;color:#64748b;font-size:10px;font-weight:700}.bottomnav button b{display:block;font-size:19px;margin-bottom:2px}.bottomnav button.active{color:#0f172a}.head-actions{width:100%}.head-actions .btn{flex:1}.toolbar{align-items:stretch;flex-direction:column}.searchbox{max-width:none}.cartline{grid-template-columns:1fr 70px 85px 85px 36px}.cartline .field:nth-child(1){grid-column:1/-1}.toast{right:14px;left:14px;bottom:82px;text-align:center}.top-title small{display:none}}
-</style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial;background:#f4f6f8;color:#17202a}
+.app{max-width:520px;margin:auto;min-height:100vh;background:#f7f8fa;padding-bottom:82px}
+header{background:#111827;color:#fff;padding:22px 18px 18px;border-radius:0 0 22px 22px}
+.brand{font-size:24px;font-weight:800}.sub{opacity:.7;font-size:12px;margin-top:3px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.stat{background:#fff;color:#111827;border-radius:15px;padding:14px;box-shadow:0 3px 14px #0000000d}.stat b{display:block;font-size:20px;margin-top:4px}
+main{padding:16px}.page{display:none}.page.active{display:block}.title{font-size:20px;font-weight:800;margin:4px 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border:1px solid #e7eaf0;border-radius:16px;padding:16px;box-shadow:0 3px 12px #00000008}.card h3{margin:0 0 5px;font-size:16px}.muted{color:#6b7280;font-size:12px}
+button{border:0;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}.primary{background:#111827;color:#fff}.secondary{background:#e9edf2;color:#111827}.danger{background:#fee2e2;color:#991b1b}
+input,select{width:100%;padding:13px;border:1px solid #dce1e8;border-radius:11px;background:#fff;font-size:15px;margin:5px 0 10px}label{font-size:12px;font-weight:700;color:#4b5563}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.list{display:grid;gap:9px}.item{background:#fff;padding:13px;border-radius:13px;border:1px solid #e8ebef}.item b{display:block}.item small{color:#6b7280}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}.search{margin-bottom:12px}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:#fff;border-top:1px solid #e5e7eb;display:grid;grid-template-columns:repeat(6,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:5}.nav{background:none;color:#6b7280;padding:7px 2px;font-size:11px}.nav.active{color:#111827}.nav span{display:block;font-size:19px;margin-bottom:2px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden}td,th{padding:10px;border-bottom:1px solid #edf0f3;text-align:left;font-size:12px}th{background:#f8fafc}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 15px;border-radius:12px;display:none;z-index:10;font-size:13px}
 
-<style id="bikepro-final-mobile">
-/* BikePro final mobile polish */
-html{scroll-behavior:smooth}
-body{overflow-x:hidden}
-button,input,select,textarea{touch-action:manipulation}
-@media (max-width:700px){
-  .app{width:100%;max-width:none;min-height:100dvh}
-  main{padding:12px}
-  .grid{grid-template-columns:1fr 1fr;gap:9px}
-  .card{padding:13px;border-radius:14px}
-  .actions{grid-template-columns:1fr 1fr;gap:8px}
-  input,select,textarea{font-size:16px;min-height:46px}
-  button{min-height:44px}
-  table{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}
-  .bottom{width:100%;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
-}
-@media (min-width:701px){
-  .app{max-width:1180px;min-height:100vh}
-  main{padding:24px}
-}
+<style>
+.auth-overlay{position:fixed;inset:0;background:#f4f6f8;display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.auth-box{width:min(420px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 15px 50px #0002}
+.auth-box h1{margin:0 0 5px}.auth-box p{color:#6b7280;font-size:13px}.auth-error{color:#b91c1c;font-size:12px;margin:6px 0;min-height:18px}
+.userbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:#fff;border-bottom:1px solid #eee;font-size:12px}
 </style>
-<style id="bikepro-mobile-fix">
-*{box-sizing:border-box}
-html,body{width:100%;max-width:100%;overflow-x:hidden}
-.app{width:100%;max-width:1180px;margin:0 auto;overflow-x:hidden}
-main{min-width:0;overflow-x:hidden}
-.page{min-width:0}
-.tablewrap{width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tablewrap table{min-width:620px}
-.panel,.card,.stat,.hero,.toolbar,.formgrid,.grid,.actions{min-width:0;max-width:100%}
-input,select,textarea{max-width:100%;min-width:0}
-@media(max-width:700px){
-  body{font-size:14px}
-  .app{min-height:100dvh;width:100%;}
-  .sidebar{display:none!important}
-  main{padding:12px 12px 88px!important;width:100%;}
-  .topbar{position:sticky;top:0;z-index:20;margin:-12px -12px 12px;padding:10px 12px;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);display:flex;align-items:center;gap:8px;min-width:0}
-  .top-title{min-width:0;flex:1;overflow:hidden}
-  .top-title h1{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .head-actions{width:auto!important;display:flex;gap:6px;min-width:0}
-  .head-actions .btn{flex:0 0 auto;padding:9px 10px;white-space:nowrap}
-  .head-actions .btn.secondary{max-width:125px;overflow:hidden;text-overflow:ellipsis}
-  .grid{grid-template-columns:1fr!important;gap:10px!important}
-  .stats,.stats-grid,.dashboard-grid{grid-template-columns:1fr 1fr!important;gap:10px!important}
-  .actions{grid-template-columns:1fr!important;gap:8px!important}
-  .toolbar{display:flex!important;flex-direction:column!important;gap:8px!important;align-items:stretch!important}
-  .toolbar>*{width:100%!important;max-width:none!important}
-  .searchbox{max-width:none!important;width:100%!important}
-  .cartline{grid-template-columns:minmax(0,1fr) 64px 78px 34px!important;gap:6px!important}
-  .cartline .field:nth-child(1){grid-column:1/-1!important}
-  .card,.panel{padding:13px!important;border-radius:14px!important}
-  .modal{padding:10px!important}
-  .modalbox{width:100%!important;max-width:100%!important;max-height:90dvh;overflow:auto}
-  .formgrid{grid-template-columns:1fr!important}
-  .bottomnav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;z-index:1000;padding:7px 4px calc(7px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(5,1fr)!important}
-  .bottomnav button{min-width:0!important;padding:5px 2px!important;font-size:10px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .bottomnav button b{font-size:18px!important}
-  .toast{left:12px!important;right:12px!important;bottom:78px!important}
-  .loginbox{width:calc(100% - 24px)!important;max-width:430px!important;padding:22px!important}
-}
-@media(max-width:390px){
-  main{padding-left:10px!important;padding-right:10px!important}
-  .stats,.stats-grid,.dashboard-grid{grid-template-columns:1fr!important}
-  .top-title h1{font-size:18px}
-  .head-actions .btn{padding:8px 7px;font-size:12px}
-  .stat h2{font-size:22px!important}
-}
+
+<style id="sales-responsive-fix">
+.sales-page{min-width:0}.sales-title{display:flex;align-items:center;justify-content:space-between}.sale-badge{font-size:11px;padding:5px 9px;border-radius:999px;background:#e9edf2;color:#4b5563}.sales-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:14px;align-items:start}.sales-form,.sales-summary{min-width:0}.sales-section-title{font-weight:800;font-size:14px;margin-bottom:12px}.sale-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sale-fields>div{min-width:0}.sales-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:9px;margin-top:8px}.sales-actions button{width:100%;min-height:48px}.sales-summary{position:sticky;top:12px}.summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #edf0f3;font-size:13px}.sales-total{display:flex;justify-content:space-between;align-items:center;padding:17px 0 12px}.sales-total span{font-weight:700}.sales-total strong{font-size:28px}.balance{color:#b45309}.sale-hint{margin-top:12px;padding:11px;border-radius:11px;background:#f8fafc;color:#6b7280;font-size:11px;line-height:1.4}
+@media(max-width:700px){.sales-layout{grid-template-columns:1fr;gap:10px}.sales-summary{position:static;order:-1}.sales-form,.sales-summary{padding:14px!important}.sale-fields{grid-template-columns:1fr 1fr;gap:8px}.sale-fields input{font-size:16px;min-height:48px}.sales-form select{min-height:48px;font-size:16px}.sales-actions{grid-template-columns:1fr 1.3fr}.sales-total strong{font-size:25px}.summary-row{padding:8px 0}.sale-hint{font-size:10px}}
+@media(max-width:360px){.sale-fields{grid-template-columns:1fr}.sales-actions{grid-template-columns:1fr}.sales-total strong{font-size:23px}.sales-title{font-size:18px}}
+</style>
+<style id="desktop-mobile-final-fix">
+*{box-sizing:border-box}html,body{margin:0;min-width:0;overflow-x:hidden}.app{width:100%;max-width:none;margin:0;min-height:100vh;background:#f7f8fa;padding:0 0 82px 250px}.desktop-sidebar{position:fixed;z-index:50;left:0;top:0;bottom:0;width:250px;background:#111827;color:#fff;padding:18px 14px;display:flex;flex-direction:column;gap:7px}.desktop-sidebar .brand{font-size:22px;padding:8px 10px 18px;display:flex;gap:7px;align-items:center}.desktop-sidebar .brand small{font-size:11px;opacity:.65}.desktop-sidebar button{border:0;background:transparent;color:#d1d5db;text-align:left;border-radius:10px;padding:12px 13px;font-size:14px;cursor:pointer}.desktop-sidebar button:hover,.desktop-sidebar button.active{background:#1f2937;color:#fff}.desktop-sidebar button span{margin-left:7px}.bottom{display:none!important}.more-nav{display:none}.page{max-width:1180px;margin:0 auto;padding:24px}.page.active{display:block}.title{font-size:24px;font-weight:800;margin-bottom:14px}.sales-page{max-width:1180px;margin:auto}.sales-layout{grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr)}.table-wrap,.list{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.list>table{min-width:620px}
+@media(max-width:900px){.app{padding-left:0}.desktop-sidebar{display:none}.bottom{display:grid!important;position:fixed;bottom:0;left:0;right:0;width:100%;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid #e5e7eb;padding:7px 4px calc(7px + env(safe-area-inset-bottom));z-index:100}.nav{min-width:0;padding:6px 2px!important;font-size:10px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nav span{display:block;font-size:18px!important}.more-nav{display:flex;position:fixed;right:10px;bottom:76px;z-index:101;flex-direction:column;gap:7px;background:#fff;padding:10px;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 35px #0002}.more-nav[hidden]{display:none}.more-nav button{border:0;background:#f8fafc;padding:11px 14px;border-radius:9px;text-align:left}.page{padding:14px 12px 92px}.title{font-size:20px}.sales-layout{grid-template-columns:1fr}.sales-summary{position:static}.sale-fields{grid-template-columns:1fr 1fr}.actions{grid-template-columns:1fr 1fr}.card{max-width:100%;overflow:hidden}}
+@media(max-width:430px){.sale-fields{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.bottom .nav{font-size:9px!important}.bottom .nav span{font-size:17px!important}.page{padding-left:10px;padding-right:10px}.purchase-nav{display:block!important}}
 </style></head>
 <body>
-<div class="overlay" id="authOverlay">
-  <div class="loginbox">
-    <div style="font-size:42px">🏍️</div>
-    <h1>BikePro ERP</h1>
-    <p id="authModeText">Sign in to your cloud database</p>
-    <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="owner@example.com"></div>
-    <div class="field" style="margin-top:10px"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 characters"></div>
-    <div class="field" id="shopField" style="margin-top:10px;display:none"><label>Shop Name</label><input id="authShop" placeholder="BikePro Accessories & Workshop"></div>
-    <div class="error" id="authError"></div>
-    <button class="btn primary" id="authBtn" style="width:100%;margin-top:5px" onclick="authSubmit()">Sign In</button>
-    <button class="btn" id="authToggle" style="width:100%;margin-top:8px" onclick="toggleAuth()">Create account</button>
-    <button class="btn" style="width:100%;margin-top:8px" onclick="useOffline()">Continue Offline</button>
-    <small style="display:block;color:#94a3b8;margin-top:12px;text-align:center">Cloud data is stored in your Supabase project and separated by shop.</small>
+
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-box">
+    <h1>🏍️ BikePro ERP</h1>
+    <p id="authModeText">Sign in to your shop</p>
+    <input id="authEmail" type="email" placeholder="Email">
+    <input id="authPassword" type="password" placeholder="Password">
+    <input id="authShop" placeholder="Shop name (for new account)" style="display:none">
+    <div class="auth-error" id="authError"></div>
+    <button class="primary" style="width:100%" onclick="authSubmit()" id="authBtn">Sign In</button>
+    <button class="secondary" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="authToggle">Create account</button>
   </div>
 </div>
-<div class="app">
-<aside class="sidebar">
-  <div class="logo"><div class="logo-icon">🏍️</div><div><b>BikePro ERP</b><small>Accessories & Workshop</small></div></div>
-  <div class="navgroup">
-    <button class="navbtn active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
-    <button class="navbtn" data-page="sales"><span class="ico">🧾</span>Sales</button>
-    <button class="navbtn" data-page="purchases"><span class="ico">📥</span>Purchases</button>
-    <button class="navbtn" data-page="products"><span class="ico">📦</span>Products & Stock</button>
-    <button class="navbtn" data-page="customers"><span class="ico">👥</span>Customers</button>
-    <button class="navbtn" data-page="repairs"><span class="ico">🔧</span>Mechanic / Repairs</button>
-    <button class="navbtn" data-page="suppliers"><span class="ico">🏢</span>Suppliers</button>
-    <button class="navbtn" data-page="ledger"><span class="ico">📒</span>Ledgers</button>
-    <button class="navbtn" data-page="reports"><span class="ico">📊</span>Reports</button>
-    <button class="navbtn" data-page="settings"><span class="ico">⚙️</span>Settings</button>
-  </div>
-  <div class="sidebar-footer">Supabase Cloud • Offline fallback<br>Mobile + Desktop Ready</div>
+<div class="userbar" id="userbar" style="display:none">
+  <span id="userEmail"></span><button class="secondary" onclick="signOut()">Sign out</button>
+</div>
+<div class="app"><aside class="desktop-sidebar" aria-label="Main navigation">
+  <div class="brand">🏍️ <b>BikePro</b><small>ERP</small></div>
+  <button onclick="show('dashboard')">⌂ <span>Dashboard</span></button>
+  <button onclick="show('sales')">🧾 <span>Sales / POS</span></button>
+  <button onclick="show('purchases')">📥 <span>Purchases</span></button>
+  <button onclick="show('customers')">👥 <span>Customers</span></button>
+  <button onclick="show('products')">📦 <span>Inventory</span></button>
+  <button onclick="show('ledger')">📒 <span>Ledgers</span></button>
+  <button onclick="show('reports')">📊 <span>Reports</span></button>
 </aside>
-
-<main class="main">
-<header class="topbar">
-  <div class="top-title"><b id="topTitle">Dashboard</b><small id="todayLabel"></small></div>
-  <div class="top-actions"><span id="cloudStatus" class="cloud-pill offline">● Sign in for Cloud</span><button class="btn sm" id="cloudSignOut" style="display:none" onclick="signOut()">↪ <span>Sign out</span></button><button class="btn sm" onclick="newSale()">＋ New Sale</button><button class="btn sm" onclick="openRepair()">🔧 New Repair</button></div>
+<header>
+  <div class="brand">🏍️ BikePro ERP</div><div class="sub">Bike Accessories • Mobile Shop Management</div>
+  <div class="stats">
+    <div class="stat"><small>Today's Sales</small><b id="todaySales">Rs 0</b></div>
+    <div class="stat"><small>Receivable</small><b id="receivable">Rs 0</b></div>
+  </div>
 </header>
 
-<div class="content">
-<section class="page active" id="page-dashboard">
-  <div class="pagehead"><div><h1>Good day 👋</h1><p>Here's what's happening in your bike shop today.</p></div><div class="head-actions"><button class="btn accent" onclick="newSale()">＋ New Sale</button><button class="btn" onclick="openRepair()">🔧 Repair Job</button></div></div>
-  <div class="cards">
-    <div class="statcard"><span class="sicon">💰</span><div class="label">Today's Sales</div><div class="value" id="dSales">Rs 0</div><div class="sub" id="dSalesCount">0 invoices</div></div>
-    <div class="statcard"><span class="sicon">🧾</span><div class="label">Receivable</div><div class="value" id="dReceivable">Rs 0</div><div class="sub">Customer outstanding</div></div>
-    <div class="statcard"><span class="sicon">📦</span><div class="label">Stock Value</div><div class="value" id="dStock">Rs 0</div><div class="sub" id="dStockCount">0 units</div></div>
-    <div class="statcard"><span class="sicon">🔧</span><div class="label">Active Repairs</div><div class="value" id="dRepairs">0</div><div class="sub" id="dRepairSub">0 ready</div></div>
-  </div>
-  <div class="grid2">
-    <div class="panel"><div class="panel-head"><h3>Recent Sales</h3><button class="btn sm" onclick="go('sales')">View all</button></div><div id="recentSales" class="list"></div></div>
-    <div class="panel"><div class="panel-head"><h3>Low Stock</h3><button class="btn sm" onclick="go('products')">Stock</button></div><div id="lowStock" class="list"></div></div>
-  </div>
-  <div class="grid3" style="margin-top:18px">
-    <div class="panel"><div class="panel-head"><h3>Repair Pipeline</h3></div><div id="repairPipeline"></div></div>
-    <div class="panel"><div class="panel-head"><h3>Quick Actions</h3></div><div class="list"><button class="btn" onclick="go('customers')">👥 Add Customer</button><button class="btn" onclick="go('products')">📦 Add Product</button><button class="btn" onclick="go('purchases')">📥 Stock In</button></div></div>
-    <div class="panel"><div class="panel-head"><h3>Business Snapshot</h3></div><div class="kpis"><div class="mini"><span>All Sales</span><b id="snapSales">Rs 0</b></div><div class="mini"><span>Gross Profit</span><b id="snapProfit">Rs 0</b></div><div class="mini"><span>Customers</span><b id="snapCustomers">0</b></div><div class="mini"><span>Suppliers</span><b id="snapSuppliers">0</b></div></div></div>
-  </div>
-</section>
-
-<section class="page" id="page-sales">
-  <div class="pagehead"><div><h1>Sales & Invoices</h1><p>Create invoices, reduce stock and track customer balances.</p></div></div>
-  <div class="cart">
-    <div class="panel">
-      <div class="formgrid">
-        <div class="field"><label>Customer</label><select id="saleCustomer"></select></div>
-        <div class="field"><label>Invoice No.</label><input id="saleInvoice" readonly></div>
-      </div>
-      <div class="panel" style="background:var(--surface2);margin-top:15px">
-        <div class="panel-head"><h3>Invoice Items</h3><button class="btn sm accent" onclick="addCartLine()">＋ Add Item</button></div>
-        <div id="cartLines"></div>
-      </div>
-      <div class="formgrid" style="margin-top:14px">
-        <div class="field"><label>Notes</label><textarea id="saleNotes" placeholder="Optional note"></textarea></div>
-        <div class="carttotal"><div class="split"><span>Subtotal</span><b id="cartSubtotal">Rs 0</b></div><div class="split"><span>Discount</span><b id="cartDiscount">Rs 0</b></div><div class="split"><span>Grand Total</span><b id="cartGrand">Rs 0</b></div><div class="split"><span>Paid</span><b id="cartPaid">Rs 0</b></div><div class="split"><span>Balance</span><b id="cartBalance">Rs 0</b></div></div>
-      </div>
-      <div class="form-actions"><button class="btn" onclick="clearCart()">Clear</button><button class="btn primary" onclick="saveSale()">💾 Save & Print Invoice</button></div>
-    </div>
-    <div class="panel"><div class="panel-head"><h3>Sales Register</h3><span class="muted" id="salesCount">0</span></div><input class="searchbox" id="salesSearch" placeholder="Search invoice or customer…" oninput="renderSales()"><div id="salesTable" style="margin-top:12px"></div></div>
-  </div>
-</section>
-
-<section class="page" id="page-purchases">
-  <div class="pagehead"><div><h1>Purchases</h1><p>Receive stock and keep supplier balances.</p></div></div>
-  <div class="grid2">
-    <div class="panel">
-      <div class="formgrid">
-        <div class="field"><label>Supplier</label><input id="purchaseSupplier" placeholder="Supplier name"></div>
-        <div class="field"><label>Invoice No.</label><input id="purchaseInvoice" readonly></div>
-        <div class="field"><label>Product</label><select id="purchaseProduct"></select></div>
-        <div class="field"><label>Quantity</label><input id="purchaseQty" type="number" min="1" value="1"></div>
-        <div class="field"><label>Purchase Rate</label><input id="purchaseRate" type="number" min="0" value="0"></div>
-        <div class="field"><label>Paid to Supplier</label><input id="purchasePaid" type="number" min="0" value="0"></div>
-      </div>
-      <div class="form-actions"><button class="btn primary" onclick="savePurchase()">＋ Save Purchase</button></div>
-    </div>
-    <div class="panel"><div class="panel-head"><h3>Recent Purchases</h3></div><div id="purchaseTable"></div></div>
-  </div>
-</section>
-
-<section class="page" id="page-products">
-  <div class="pagehead"><div><h1>Products & Stock</h1><p>Manage bike accessories, cost, selling price and stock levels.</p></div><button class="btn accent" onclick="openProduct()">＋ Add Product</button></div>
-  <div class="panel"><div class="toolbar"><div class="left"><input class="searchbox" id="productSearch" placeholder="Search product, category or brand…" oninput="renderProducts()"></div><div class="rightside"><span class="muted" id="productCount"></span></div></div><div id="productsTable"></div></div>
-</section>
-
-<section class="page" id="page-customers">
-  <div class="pagehead"><div><h1>Customers</h1><p>Customer profiles, phone numbers and outstanding balances.</p></div><button class="btn accent" onclick="openCustomer()">＋ Add Customer</button></div>
-  <div class="panel"><div class="toolbar"><input class="searchbox" id="customerSearch" placeholder="Search customer or phone…" oninput="renderCustomers()"></div><div id="customersTable"></div></div>
-</section>
-
-<section class="page" id="page-repairs">
-  <div class="pagehead"><div><h1>Mechanic / Repairs</h1><p>Manage workshop jobs from received → diagnosis → repair → ready → delivered.</p></div><button class="btn accent" onclick="openRepair()">＋ New Repair Job</button></div>
-  <div class="cards">
-    <div class="statcard"><div class="label">Received</div><div class="value" id="rReceived">0</div></div>
-    <div class="statcard"><div class="label">In Repair</div><div class="value" id="rProgress">0</div></div>
-    <div class="statcard"><div class="label">Ready</div><div class="value" id="rReady">0</div></div>
-    <div class="statcard"><div class="label">Workshop Revenue</div><div class="value" id="rRevenue">Rs 0</div></div>
-  </div>
-  <div class="panel" style="margin-top:18px"><div class="toolbar"><input class="searchbox" id="repairSearch" placeholder="Search job, customer, bike or mechanic…" oninput="renderRepairs()"><select class="searchbox" id="repairFilter" style="max-width:180px" onchange="renderRepairs()"><option value="">All status</option><option>Received</option><option>Diagnosis</option><option>In Repair</option><option>Ready</option><option>Delivered</option></select></div><div id="repairsTable"></div></div>
-</section>
-
-<section class="page" id="page-suppliers">
-  <div class="pagehead"><div><h1>Suppliers</h1><p>Track suppliers and purchase outstanding amounts.</p></div><button class="btn accent" onclick="openSupplier()">＋ Add Supplier</button></div>
-  <div class="panel"><div id="suppliersTable"></div></div>
-</section>
-
-<section class="page" id="page-ledger">
-  <div class="pagehead"><div><h1>Ledgers</h1><p>Customer and supplier transaction history.</p></div></div>
-  <div class="grid2">
-    <div class="panel"><div class="panel-head"><h3>Customer Ledger</h3></div><select id="ledgerCustomer" onchange="renderLedger()"></select><div id="ledgerBox" style="margin-top:12px"></div></div>
-    <div class="panel"><div class="panel-head"><h3>Supplier Ledger</h3></div><select id="ledgerSupplier" onchange="renderSupplierLedger()"></select><div id="supplierLedgerBox" style="margin-top:12px"></div></div>
-  </div>
-</section>
-
-<section class="page" id="page-reports">
-  <div class="pagehead"><div><h1>Reports</h1><p>Management overview of sales, profit, stock and workshop.</p></div><button class="btn" onclick="exportBackup()">⬇ Backup Database</button></div>
-  <div class="cards">
-    <div class="statcard"><div class="label">Total Sales</div><div class="value" id="repSales">Rs 0</div></div>
-    <div class="statcard"><div class="label">Gross Profit</div><div class="value" id="repProfit">Rs 0</div></div>
-    <div class="statcard"><div class="label">Purchases</div><div class="value" id="repPurchases">Rs 0</div></div>
-    <div class="statcard"><div class="label">Receivable</div><div class="value" id="repReceivable">Rs 0</div></div>
-  </div>
-  <div class="grid2">
-    <div class="panel"><div class="panel-head"><h3>Sales by Product</h3></div><div id="productReport"></div></div>
-    <div class="panel"><div class="panel-head"><h3>Repair Revenue</h3></div><div id="repairReport"></div></div>
-  </div>
-</section>
-
-<section class="page" id="page-settings">
-  <div class="pagehead"><div><h1>Settings & Backup</h1><p>Shop information and data protection.</p></div></div>
-  <div class="grid2">
-    <div class="panel"><div class="panel-head"><h3>Shop Information</h3></div><div class="formgrid"><div class="field full"><label>Shop Name</label><input id="shopName"></div><div class="field"><label>Phone</label><input id="shopPhone"></div><div class="field"><label>Currency</label><input id="shopCurrency" value="Rs"></div><div class="field full"><label>Invoice Footer</label><textarea id="invoiceFooter"></textarea></div></div><div class="form-actions"><button class="btn primary" onclick="saveSettings()">Save Settings</button></div></div>
-    <div class="panel"><div class="panel-head"><h3>Database</h3></div><p class="muted">Your current database is stored in this browser. Use backup regularly so your shop data is safe.</p><div class="list"><button class="btn" onclick="exportBackup()">⬇ Export Full Backup</button><button class="btn" onclick="document.getElementById('restoreFile').click()">⬆ Restore Backup</button><button class="btn danger" onclick="resetDemo()">Reset Demo Data</button></div><input id="restoreFile" type="file" accept=".json" hidden onchange="restoreBackup(event)"></div>
-  </div>
-</section>
+<main>
+<section id="dashboard" class="page active">
+<div class="title">Dashboard</div>
+<div class="actions">
+<button class="primary" onclick="show('sales')">＋ New Sale</button>
+<button class="secondary" onclick="show('payments')">💵 Payment</button>
+<button class="secondary" onclick="show('purchases')">📥 Purchase</button>
 </div>
+<div class="grid">
+<div class="card"><h3>📦 Stock</h3><div class="muted">Items in stock</div><b id="stockCount">0</b></div>
+<div class="card"><h3>👥 Customers</h3><div class="muted">Registered customers</div><b id="customerCount">0</b></div>
+</div>
+<h3>Recent Sales</h3><div id="recentSales" class="list"></div>
+</section>
+
+<section id="sales" class="page sales-page">
+<div class="title sales-title"><span>New Sale</span><span class="sale-badge">POS</span></div>
+<div class="sales-layout">
+  <div class="card sales-form">
+    <div class="sales-section-title">Customer & Product</div>
+    <label>Customer</label><select id="saleCustomer"></select>
+    <label>Product</label><select id="saleProduct" onchange="fillRate()"></select>
+    <div class="sale-fields">
+      <div><label>Qty</label><input id="qty" type="number" min="1" value="1" oninput="calc()"></div>
+      <div><label>Rate</label><input id="rate" type="number" min="0" oninput="calc()"></div>
+    </div>
+    <div class="sale-fields">
+      <div><label>Discount</label><input id="discount" type="number" min="0" value="0" oninput="calc()"></div>
+      <div><label>Paid</label><input id="paid" type="number" min="0" value="0" oninput="calc()"></div>
+    </div>
+    <div class="sales-actions">
+      <button class="secondary" type="button" onclick="calc()">↻ Recalculate</button>
+      <button class="primary" type="button" onclick="saveSale()">💾 Save & Print</button>
+    </div>
+  </div>
+  <div class="card sales-summary">
+    <div class="sales-section-title">Invoice Summary</div>
+    <div class="summary-row"><span>Subtotal</span><b id="saleSubtotal">Rs 0</b></div>
+    <div class="summary-row"><span>Discount</span><b id="saleDiscountView">Rs 0</b></div>
+    <div class="sales-total"><span>Total</span><strong id="saleTotal">Rs 0</strong></div>
+    <div class="summary-row balance"><span>Balance</span><b id="saleBalance">Rs 0</b></div>
+    <div class="sale-hint">💡 Select a customer, choose a product, enter quantity and payment, then save.</div>
+  </div>
+</div>
+</section>
+
+<section id="customers" class="page">
+<div class="title">Customers</div>
+<div class="card"><input id="custName" placeholder="Customer name"><input id="custPhone" placeholder="Phone"><button class="primary" onclick="addCustomer()">Add Customer</button></div>
+<br><div id="customerList" class="list"></div>
+</section>
+
+<section id="products" class="page">
+<div class="title">Products / Stock</div>
+<div class="card"><input id="prodName" placeholder="Product name (e.g. LED Headlight)"><input id="prodCategory" placeholder="Category"><input id="prodBrand" placeholder="Brand (e.g. Honda, Bosch)">
+<div class="row"><input id="prodCost" type="number" placeholder="Cost price"><input id="prodRate" type="number" placeholder="Selling rate"></div>
+<input id="prodStock" type="number" placeholder="Opening stock"><button class="primary" onclick="addProduct()">Add Product</button></div>
+<br><div id="productList" class="list"></div>
+</section>
+
+
+<section id="purchases" class="page">
+<div class="title">Purchase / Stock In</div>
+<div class="card">
+<div class="card" style="background:#f8fafc;margin-bottom:10px"><div class="muted">Purchase Invoice</div><h3 id="purchaseNo">PUR-5001</h3></div>
+<label>Supplier</label><input id="supplier" placeholder="Supplier name">
+<label>Product</label><select id="purchaseProduct"></select>
+<div class="row"><div><label>Qty</label><input id="purchaseQty" type="number" min="1" value="1"></div>
+<div><label>Purchase Rate</label><input id="purchaseRate" type="number" min="0"></div></div>
+<label>Paid to Supplier</label><input id="purchasePaid" type="number" min="0" value="0">
+<button class="primary" style="width:100%" onclick="savePurchase()">＋ Save Purchase</button>
+</div>
+<br><div id="purchaseList" class="list"></div>
+</section>
+
+<section id="payments" class="page">
+<div class="title">Customer Payment</div>
+<div class="card"><label>Customer</label><select id="payCustomer"></select><label>Amount</label><input id="payAmount" type="number" placeholder="Payment amount"><button class="primary" style="width:100%" onclick="savePayment()">Save Payment</button></div>
+<br><div id="paymentList" class="list"></div>
+</section>
+
+
+<section id="suppliers" class="page">
+<div class="title">Supplier Ledger</div>
+<div class="card"><input id="supplierName" placeholder="Supplier name"><button class="primary" onclick="addSupplier()">Add Supplier</button></div>
+<br><select id="supplierLedger" onchange="renderSupplierLedger()"></select><br><br>
+<div id="supplierLedgerBox"></div>
+</section>
+
+<section id="reports" class="page">
+<div class="title">Reports</div>
+<div class="grid">
+<div class="card"><div class="muted">Sales</div><h3 id="reportSales">Rs 0</h3></div>
+<div class="card"><div class="muted">Gross Profit</div><h3 id="reportProfit">Rs 0</h3></div>
+<div class="card"><div class="muted">Stock Value</div><h3 id="reportStock">Rs 0</h3></div>
+<div class="card"><div class="muted">Receivable</div><h3 id="reportReceivable">Rs 0</h3></div>
+</div>
+<br><div class="card"><h3>Backup & Restore</h3><p class="muted">Export your complete shop database or restore a previous backup.</p>
+<div class="actions"><button class="primary" onclick="exportBackup()">⬇ Backup</button><button class="secondary" onclick="document.getElementById('restoreFile').click()">⬆ Restore</button></div>
+<input id="restoreFile" type="file" accept=".json" style="display:none" onchange="restoreBackup(event)">
+</div>
+</section>
+
+<section id="ledger" class="page">
+<div class="title">Customer Ledger</div>
+<select id="ledgerCustomer" onchange="renderLedger()"></select><br><br>
+<div id="ledgerBox"></div>
+</section>
 </main>
 
-<nav class="bottomnav">
- <button class="active" data-page="dashboard"><b>⌂</b>Home</button><button data-page="sales"><b>🧾</b>Sales</button><button data-page="repairs"><b>🔧</b>Repairs</button><button data-page="products"><b>📦</b>Stock</button><button data-page="reports"><b>📊</b>Reports</button>
+<nav class="bottom">
+<button class="nav active" onclick="show('dashboard',this)"><span>⌂</span>Home</button>
+<button class="nav" onclick="show('sales',this)"><span>🧾</span>Sales</button>
+<button class="nav purchase-nav" onclick="show('purchases',this)"><span>📥</span>Purchase</button>
+<button class="nav" onclick="show('products',this)"><span>📦</span>Stock</button>
+<button class="nav" onclick="toggleMoreNav()"><span>☰</span>More</button>
 </nav>
+<div id="moreNav" class="more-nav" hidden>
+ <button onclick="show('customers');toggleMoreNav()">👥 Customers</button>
+ <button onclick="show('ledger');toggleMoreNav()">📒 Ledger</button>
+ <button onclick="show('reports');toggleMoreNav()">📊 Reports</button>
+ <button onclick="toggleMoreNav()">✕ Close</button>
 </div>
-
-<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle"></h2><button class="iconbtn" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
-<div class="toast" id="toast"></div>
+</div><div id="toast" class="toast"></div>
 
 <script>
-const KEY='bikepro_erp_enhanced_v2';
-const defaultDB={
- settings:{shopName:'BikePro Accessories & Workshop',phone:'',currency:'Rs',invoiceFooter:'Thank you for your business!'},
- customers:[{id:1,name:'Walk-in Customer',phone:'',address:''}],
- products:[
-  {id:1,name:'LED Headlight',category:'Lighting',brand:'Osram',cost:1200,rate:1800,stock:20,minStock:5},
-  {id:2,name:'Bike Horn',category:'Electrical',brand:'Bosch',cost:500,rate:750,stock:15,minStock:5},
-  {id:3,name:'USB Charger',category:'Electrical',brand:'Universal',cost:800,rate:1200,stock:12,minStock:4},
-  {id:4,name:'Brake Lever Set',category:'Controls',brand:'Honda',cost:600,rate:950,stock:10,minStock:3}
- ],
- suppliers:[{id:1,name:'Demo Supplier',phone:''}],
- sales:[],purchases:[],payments:[],
- repairs:[],
- counters:{sale:1001,purchase:5001,repair:1,customer:2,product:5,supplier:2}
+const key='bikepro_erp_v1';
+let db=JSON.parse(localStorage.getItem(key)||'null')||{
+customers:[{id:1,name:'Walk-in Customer',phone:''}],
+products:[
+{id:1,name:'LED Headlight',cat:'Lighting',brand:'Osram',cost:1200,rate:1800,stock:20},
+{id:2,name:'Bike Horn',cat:'Electrical',brand:'Bosch',cost:500,rate:750,stock:15},
+{id:3,name:'USB Charger',cat:'Electrical',brand:'Universal',cost:800,rate:1200,stock:12},
+{id:4,name:'Brake Lever Set',cat:'Controls',brand:'Honda',cost:600,rate:950,stock:10}
+],sales:[],payments:[],purchases:[],purchasePayments:[],settings:{nextSale:1001,nextPurchase:5001}
 };
-let db=loadDB(), cart=[], currentPage='dashboard';
-
-function loadDB(){try{const x=JSON.parse(localStorage.getItem(KEY));return x?mergeDB(x):structuredClone(defaultDB)}catch(e){return structuredClone(defaultDB)}}
-function mergeDB(x){const d=structuredClone(defaultDB);return {...d,...x,settings:{...d.settings,...(x.settings||{})},counters:{...d.counters,...(x.counters||{})},customers:x.customers||d.customers,products:x.products||d.products,suppliers:x.suppliers||[],sales:x.sales||[],purchases:x.purchases||[],payments:x.payments||[],repairs:x.repairs||[]}}
-function persist(){localStorage.setItem(KEY,JSON.stringify(db));refresh()}
-function money(n){return (db.settings.currency||'Rs')+' '+Number(n||0).toLocaleString('en-PK',{maximumFractionDigits:0})}
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function uid(){return Date.now()+Math.floor(Math.random()*1000)}
-function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.remove('show');void e.offsetWidth;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
-function go(id){currentPage=id;document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));const names={dashboard:'Dashboard',sales:'Sales & Invoices',purchases:'Purchases',products:'Products & Stock',customers:'Customers',repairs:'Mechanic / Repairs',suppliers:'Suppliers',ledger:'Ledgers',reports:'Reports',settings:'Settings'};document.getElementById('topTitle').textContent=names[id]||id;refresh()}
-document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
-function newSale(){go('sales');setTimeout(()=>document.querySelector('#page-sales .panel')?.scrollIntoView({behavior:'smooth'}),50);if(!cart.length)addCartLine()}
-function openRepair(){openModal('New Repair Job',repairForm())}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
-function openModal(title,body){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modal').classList.add('open')}
-document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
-
-function selectOptions(items,selected=''){return items.map(x=>`<option value="${x.id}" ${String(x.id)===String(selected)?'selected':''}>${esc(x.name)}</option>`).join('')}
+db.purchases=db.purchases||[]; db.purchasePayments=db.purchasePayments||[];
+db.settings=db.settings||{nextSale:1001,nextPurchase:5001};
+db.products.forEach(p=>{p.brand=p.brand||'';p.cost=Number(p.cost||0)});
+function save(){localStorage.setItem(key,JSON.stringify(db));refresh()}
+function money(n){return 'Rs '+Number(n||0).toLocaleString()}
+function toast(t){let x=document.getElementById('toast');x.textContent=t;x.style.display='block';setTimeout(()=>x.style.display='none',1600)}
+function toggleMoreNav(){const e=document.getElementById('moreNav');if(e)e.hidden=!e.hidden}
+function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');refresh()}
+function fillSelect(id,items,placeholder){let s=document.getElementById(id);if(!s)return;s.innerHTML=items.map(x=>`<option value="${x.id}">${x.name}</option>`).join('');if(!items.length)s.innerHTML=`<option>${placeholder||'None'}</option>`}
 function refresh(){
- document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-PK',{weekday:'long',day:'numeric',month:'short',year:'numeric'});
- fillSelects();renderDashboard();renderSales();renderPurchases();renderProducts();renderCustomers();renderRepairs();renderSuppliers();renderLedger();renderReports();renderSettings();renderCart();
+ let total=db.sales.filter(x=>new Date(x.date).toDateString()==new Date().toDateString()).reduce((a,x)=>a+x.total,0);
+ let debit={};db.customers.forEach(c=>debit[c.id]=0);db.sales.forEach(s=>debit[s.customerId]=(debit[s.customerId]||0)+s.balance);db.payments.forEach(p=>debit[p.customerId]=(debit[p.customerId]||0)-p.amount);
+ document.getElementById('todaySales').textContent=money(total);document.getElementById('receivable').textContent=money(Object.values(debit).reduce((a,x)=>a+Math.max(0,x),0));
+ document.getElementById('stockCount').textContent=db.products.reduce((a,p)=>a+Number(p.stock),0);document.getElementById('customerCount').textContent=db.customers.length;
+ fillSelect('saleCustomer',db.customers);fillSelect('payCustomer',db.customers);fillSelect('ledgerCustomer',db.customers);fillSelect('saleProduct',db.products);fillSelect('purchaseProduct',db.products);
+ fillRate();renderRecent();renderCustomers();renderProducts();renderPayments();renderPurchases();renderLedger();
+ db.suppliers=db.suppliers||[];fillSelect('supplierLedger',db.suppliers);renderSupplierLedger();renderReports();updateInvoiceLabels();
 }
-function fillSelects(){
- const custs=selectOptions(db.customers), prods=selectOptions(db.products), sups=selectOptions(db.suppliers);
- ['saleCustomer','ledgerCustomer'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=custs||'<option>No customers</option>'});
- ['purchaseProduct'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=prods||'<option>No products</option>'});
- ['ledgerSupplier'].forEach(id=>{const e=document.getElementById(id);if(e)e.innerHTML=sups||'<option>No suppliers</option>'});
- const pp=document.getElementById('purchaseProduct');if(pp)pp.onchange=()=>{const p=db.products.find(x=>x.id==pp.value);if(p)document.getElementById('purchaseRate').value=p.cost||0};
-}
-function customerBalance(id){return Math.max(0,db.sales.filter(x=>x.customerId==id).reduce((a,x)=>a+x.balance,0)-db.payments.filter(x=>x.customerId==id).reduce((a,x)=>a+x.amount,0))}
-function supplierBalance(name){return Math.max(0,db.purchases.filter(x=>x.supplier===name).reduce((a,x)=>a+x.balance,0))}
-function renderDashboard(){
- const today=new Date().toDateString(), sales=db.sales.filter(x=>new Date(x.date).toDateString()===today), total=sales.reduce((a,x)=>a+x.total,0);
- const receivable=db.customers.reduce((a,c)=>a+customerBalance(c.id),0), stock=db.products.reduce((a,p)=>a+p.stock,0), stockVal=db.products.reduce((a,p)=>a+p.stock*p.cost,0), active=db.repairs.filter(x=>x.status!=='Delivered').length, ready=db.repairs.filter(x=>x.status==='Ready').length;
- dSales.textContent=money(total);dSalesCount.textContent=sales.length+' invoice'+(sales.length===1?'':'s');dReceivable.textContent=money(receivable);dStock.textContent=money(stockVal);dStockCount.textContent=stock+' units';dRepairs.textContent=active;dRepairSub.textContent=ready+' ready';
- const allSales=db.sales.reduce((a,x)=>a+x.total,0),profit=db.sales.reduce((a,x)=>a+(x.rate-(x.cost||0))*x.qty-x.discount,0);
- snapSales.textContent=money(allSales);snapProfit.textContent=money(profit);snapCustomers.textContent=db.customers.length;snapSuppliers.textContent=db.suppliers.length;
- recentSales.innerHTML=db.sales.slice(0,6).map(x=>{const c=db.customers.find(c=>c.id==x.customerId)?.name||'Customer';return `<div class="listitem"><strong>${esc(x.invoice)} · ${esc(c)} <span style="float:right">${money(x.total)}</span></strong><small>${new Date(x.date).toLocaleString()} · Balance ${money(x.balance)} <button class="btn sm" style="float:right;margin-top:-4px" onclick="printInvoice(${x.id})">Print</button></small></div>`}).join('')||'<div class="empty">No sales yet.</div>';
- const lows=db.products.filter(p=>p.stock<=p.minStock);lowStock.innerHTML=lows.map(p=>`<div class="listitem"><strong>${esc(p.name)} <span class="badge red" style="float:right">${p.stock} left</span></strong><small>${esc(p.brand||p.category)} · Reorder at ${p.minStock}</small></div>`).join('')||'<div class="empty">All stock levels are healthy.</div>';
- const statuses=['Received','Diagnosis','In Repair','Ready'];repairPipeline.innerHTML=statuses.map(s=>{const n=db.repairs.filter(x=>x.status===s).length;return `<div style="margin:11px 0"><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800"><span>${s}</span><span>${n}</span></div><div class="progress"><i style="width:${Math.min(100,n*20)}%"></i></div></div>`}).join('');
-}
-function renderCart(){
- saleInvoice.value='INV-'+String(db.counters.sale).padStart(4,'0');
- cartLines.innerHTML=cart.map((x,i)=>`<div class="cartline">
- <div class="field"><label>Product</label><select onchange="cartProduct(${i},this.value)">${selectOptions(db.products,x.productId)}</select></div>
- <div class="field"><label>Qty</label><input type="number" min="1" value="${x.qty}" onchange="cartQty(${i},this.value)"></div>
- <div class="field"><label>Rate</label><input type="number" min="0" value="${x.rate}" onchange="cartRate(${i},this.value)"></div>
- <div class="field"><label>Discount</label><input type="number" min="0" value="${x.discount}" onchange="cartDiscount(${i},this.value)"></div>
- <button class="btn danger sm" onclick="removeCartLine(${i})">✕</button></div>`).join('')||'<div class="empty">Add a product to start the invoice.</div>';
- let sub=cart.reduce((a,x)=>a+x.qty*x.rate,0),disc=cart.reduce((a,x)=>a+x.discount,0),grand=Math.max(0,sub-disc);
- cartSubtotal.textContent=money(sub);cartDiscount.textContent=money(disc);cartGrand.textContent=money(grand);
- cartPaid.textContent=money(0);cartBalance.textContent=money(grand);
-}
-function addCartLine(){const p=db.products[0];if(!p)return toast('Add a product first');cart.push({productId:p.id,qty:1,rate:p.rate,discount:0});renderCart()}
-function cartProduct(i,v){const p=db.products.find(x=>x.id==v);if(p){cart[i].productId=p.id;cart[i].rate=p.rate}renderCart()}
-function cartQty(i,v){cart[i].qty=Math.max(1,+v||1);renderCart()}
-function cartRate(i,v){cart[i].rate=Math.max(0,+v||0);renderCart()}
-function cartDiscount(i,v){cart[i].discount=Math.max(0,+v||0);renderCart()}
-function removeCartLine(i){cart.splice(i,1);renderCart()}
-function clearCart(){cart=[];document.getElementById('saleNotes').value='';renderCart()}
+function fillRate(){let p=db.products.find(x=>x.id==document.getElementById('saleProduct')?.value);if(p){document.getElementById('rate').value=p.rate;calc()}}
+function calc(){let q=+qty.value||0,r=+rate.value||0,d=+discount.value||0,p=+paid.value||0,sub=Math.max(0,q*r),t=Math.max(0,sub-d);saleTotal.textContent=money(t);saleBalance.textContent=money(Math.max(0,t-p));if(document.getElementById('saleSubtotal'))saleSubtotal.textContent=money(sub);if(document.getElementById('saleDiscountView'))saleDiscountView.textContent=money(d)}
 function saveSale(){
- if(!cart.length)return toast('Add at least one item');
- const customerId=+saleCustomer.value, notes=saleNotes.value.trim();
- let total=0,items=[];
- for(const x of cart){const p=db.products.find(z=>z.id==x.productId);if(!p||x.qty<1||x.qty>p.stock)return toast('Check product stock');const line=x.qty*x.rate;total+=Math.max(0,line-x.discount);items.push({productId:p.id,qty:x.qty,rate:x.rate,cost:p.cost||0,discount:x.discount})}
- const paid=prompt('Enter amount paid:',String(total));if(paid===null)return;const paidNum=Math.min(Math.max(0,+paid||0),total);
- items.forEach(x=>{db.products.find(p=>p.id==x.productId).stock-=x.qty});
- const sale={id:uid(),invoice:'INV-'+String(db.counters.sale++).padStart(4,'0'),date:new Date().toISOString(),customerId,items,total,paid:paidNum,balance:Math.max(0,total-paidNum),notes};
- db.sales.unshift(sale);persist();toast(sale.invoice+' saved');printInvoice(sale.id);clearCart()
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0;
+ let p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
+ if(!p||q<1||q>p.stock)return toast('Check product/quantity');
+ let invoice='INV-'+db.settings.nextSale++;
+ db.sales.unshift({id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)});
+ p.stock-=q; save(); toast(invoice+' saved'); printInvoice(db.sales[0]);
+ qty.value=1;discount.value=0;paid.value=0;show('dashboard');
 }
-function renderSales(){
- const q=(salesSearch?.value||'').toLowerCase(), rows=db.sales.filter(x=>{const c=db.customers.find(c=>c.id==x.customerId)?.name||'';return !q||x.invoice.toLowerCase().includes(q)||c.toLowerCase().includes(q)});
- salesCount.textContent=db.sales.length+' invoices';
- salesTable.innerHTML=rows.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Total</th><th>Paid</th><th>Balance</th><th></th></tr></thead><tbody>${rows.slice(0,80).map(x=>`<tr><td><b>${esc(x.invoice)}</b></td><td>${new Date(x.date).toLocaleDateString()}</td><td>${esc(db.customers.find(c=>c.id==x.customerId)?.name||'')}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(x.balance)}</td><td><button class="btn sm" onclick="printInvoice(${x.id})">🖨</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No matching sales.</div>'
-}
-function savePurchase(){
- const supplier=purchaseSupplier.value.trim(),productId=+purchaseProduct.value,qty=Math.max(1,+purchaseQty.value||0),rate=Math.max(0,+purchaseRate.value||0),paid=Math.max(0,+purchasePaid.value||0),p=db.products.find(x=>x.id==productId);
- if(!supplier||!p)return toast('Enter supplier and product');
- const total=qty*rate, x={id:uid(),invoice:'PUR-'+String(db.counters.purchase++).padStart(4,'0'),date:new Date().toISOString(),supplier,productId,qty,rate,total,paid:Math.min(paid,total),balance:Math.max(0,total-paid)};
- p.stock+=qty;p.cost=rate;db.purchases.unshift(x);if(!db.suppliers.some(s=>s.name.toLowerCase()===supplier.toLowerCase()))db.suppliers.push({id:db.counters.supplier++,name:supplier,phone:''});persist();toast(x.invoice+' saved');printPurchase(x.id);
- purchaseSupplier.value='';purchaseQty.value=1;purchasePaid.value=0
-}
-function renderPurchases(){purchaseInvoice.value='PUR-'+String(db.counters.purchase).padStart(4,'0');purchaseTable.innerHTML=db.purchases.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Invoice</th><th>Supplier</th><th>Product</th><th>Qty</th><th>Total</th><th>Balance</th><th></th></tr></thead><tbody>${db.purchases.slice(0,80).map(x=>`<tr><td>${x.invoice}</td><td>${esc(x.supplier)}</td><td>${esc(db.products.find(p=>p.id==x.productId)?.name||'')}</td><td>${x.qty}</td><td>${money(x.total)}</td><td>${money(x.balance)}</td><td><button class="btn sm" onclick="printPurchase(${x.id})">🖨</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No purchases yet.</div>'}
-function openProduct(id=null){
- const p=id?db.products.find(x=>x.id==id):{name:'',category:'',brand:'',cost:0,rate:0,stock:0,minStock:3};
- openModal(id?'Edit Product':'Add Product',`<div class="formgrid"><div class="field full"><label>Product Name</label><input id="mName" value="${esc(p.name)}"></div><div class="field"><label>Category</label><input id="mCat" value="${esc(p.category)}"></div><div class="field"><label>Brand</label><input id="mBrand" value="${esc(p.brand)}"></div><div class="field"><label>Cost Price</label><input id="mCost" type="number" value="${p.cost}"></div><div class="field"><label>Selling Price</label><input id="mRate" type="number" value="${p.rate}"></div><div class="field"><label>Stock</label><input id="mStock" type="number" value="${p.stock}"></div><div class="field"><label>Reorder Level</label><input id="mMin" type="number" value="${p.minStock??3}"></div></div><div class="form-actions"><button class="btn primary" onclick="saveProduct(${id||0})">Save Product</button></div>`)
-}
-function saveProduct(id){const name=mName.value.trim();if(!name)return toast('Enter product name');const obj={name,category:mCat.value.trim()||'General',brand:mBrand.value.trim(),cost:+mCost.value||0,rate:+mRate.value||0,stock:+mStock.value||0,minStock:+mMin.value||0};if(id)Object.assign(db.products.find(p=>p.id==id),obj);else db.products.push({id:db.counters.product++,...obj});persist();closeModal();toast('Product saved')}
-function renderProducts(){
- const q=(productSearch?.value||'').toLowerCase(),rows=db.products.filter(p=>(p.name+' '+p.category+' '+p.brand).toLowerCase().includes(q));productCount.textContent=rows.length+' products';
- productsTable.innerHTML=rows.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Product</th><th>Category</th><th>Brand</th><th>Cost</th><th>Sale</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody>${rows.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.category)}</td><td>${esc(p.brand)}</td><td>${money(p.cost)}</td><td>${money(p.rate)}</td><td>${p.stock}</td><td>${p.stock<=p.minStock?'<span class="badge red">Low stock</span>':'<span class="badge green">Healthy</span>'}</td><td><button class="btn sm" onclick="openProduct(${p.id})">Edit</button></td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">No products found.</div>'
-}
-function openCustomer(id=null){
- const c=id?db.customers.find(x=>x.id==id):{name:'',phone:'',address:''};
- openModal(id?'Edit Customer':'Add Customer',`<div class="formgrid"><div class="field full"><label>Name</label><input id="mName" value="${esc(c.name)}"></div><div class="field"><label>Phone</label><input id="mPhone" value="${esc(c.phone)}"></div><div class="field"><label>Address</label><input id="mAddress" value="${esc(c.address)}"></div></div><div class="form-actions"><button class="btn primary" onclick="saveCustomer(${id||0})">Save Customer</button></div>`)
-}
-function saveCustomer(id){const name=mName.value.trim();if(!name)return toast('Enter customer name');if(id)Object.assign(db.customers.find(c=>c.id==id),{name,phone:mPhone.value.trim(),address:mAddress.value.trim()});else db.customers.push({id:db.counters.customer++,name,phone:mPhone.value.trim(),address:mAddress.value.trim()});persist();closeModal();toast('Customer saved')}
-function renderCustomers(){
- const q=(customerSearch?.value||'').toLowerCase(),rows=db.customers.filter(c=>(c.name+' '+c.phone).toLowerCase().includes(q));
- customersTable.innerHTML=rows.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Customer</th><th>Phone</th><th>Sales</th><th>Outstanding</th><th></th></tr></thead><tbody>${rows.map(c=>{const sales=db.sales.filter(s=>s.customerId==c.id).reduce((a,s)=>a+s.total,0);return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone||'—')}</td><td>${money(sales)}</td><td>${customerBalance(c.id)>0?'<span class="badge amber">'+money(customerBalance(c.id))+'</span>':'<span class="badge green">Clear</span>'}</td><td><button class="btn sm" onclick="openCustomer(${c.id})">Edit</button></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No customers found.</div>'
-}
-function repairForm(id=null){
- const r=id?db.repairs.find(x=>x.id==id):{customerId:db.customers[0]?.id||'',bike:'',plate:'',mechanic:'',complaint:'',diagnosis:'',parts:'',labor:0,partsCost:0,status:'Received',notes:''};
- return `<div class="formgrid"><div class="field"><label>Customer</label><select id="mCustomer">${selectOptions(db.customers,r.customerId)}</select></div><div class="field"><label>Bike / Model</label><input id="mBike" value="${esc(r.bike)}" placeholder="e.g. Honda CD 70"></div><div class="field"><label>Registration / Plate</label><input id="mPlate" value="${esc(r.plate)}"></div><div class="field"><label>Mechanic</label><input id="mMechanic" value="${esc(r.mechanic)}" placeholder="Mechanic name"></div><div class="field full"><label>Customer Complaint</label><textarea id="mComplaint">${esc(r.complaint)}</textarea></div><div class="field full"><label>Diagnosis</label><textarea id="mDiagnosis">${esc(r.diagnosis)}</textarea></div><div class="field full"><label>Parts Used</label><input id="mParts" value="${esc(r.parts)}" placeholder="e.g. Brake cable, plug, oil"></div><div class="field"><label>Parts Cost</label><input id="mPartsCost" type="number" value="${r.partsCost||0}"></div><div class="field"><label>Labor Charges</label><input id="mLabor" type="number" value="${r.labor||0}"></div><div class="field"><label>Status</label><select id="mStatus">${['Received','Diagnosis','In Repair','Ready','Delivered'].map(s=>`<option ${s===r.status?'selected':''}>${s}</option>`).join('')}</select></div><div class="field"><label>Notes</label><input id="mNotes" value="${esc(r.notes)}"></div></div><div class="form-actions"><button class="btn primary" onclick="saveRepair(${id||0})">Save Repair Job</button></div>`
-}
-function saveRepair(id){const x={customerId:+mCustomer.value,bike:mBike.value.trim(),plate:mPlate.value.trim(),mechanic:mMechanic.value.trim(),complaint:mComplaint.value.trim(),diagnosis:mDiagnosis.value.trim(),parts:mParts.value.trim(),partsCost:+mPartsCost.value||0,labor:+mLabor.value||0,status:mStatus.value,notes:mNotes.value.trim()};if(!x.bike)return toast('Enter bike/model');if(id)Object.assign(db.repairs.find(r=>r.id==id),x);else db.repairs.unshift({id:uid(),job:'JOB-'+String(db.counters.repair++).padStart(4,'0'),date:new Date().toISOString(),...x,paid:0});persist();closeModal();toast('Repair job saved')}
-function renderRepairs(){
- const q=(repairSearch?.value||'').toLowerCase(),f=repairFilter?.value||'',rows=db.repairs.filter(r=>{const c=db.customers.find(x=>x.id==r.customerId)?.name||'';return (!f||r.status===f)&&(!q||(r.job+' '+c+' '+r.bike+' '+r.mechanic).toLowerCase().includes(q))});
- rReceived.textContent=db.repairs.filter(r=>r.status==='Received').length;rProgress.textContent=db.repairs.filter(r=>r.status==='In Repair'||r.status==='Diagnosis').length;rReady.textContent=db.repairs.filter(r=>r.status==='Ready').length;rRevenue.textContent=money(db.repairs.reduce((a,r)=>a+r.partsCost+r.labor,0));
- repairsTable.innerHTML=rows.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Job</th><th>Customer / Bike</th><th>Mechanic</th><th>Charges</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody>${rows.map(r=>{const c=db.customers.find(x=>x.id==r.customerId)?.name||'';const total=r.partsCost+r.labor;const cl=r.status==='Ready'?'green':r.status==='Delivered'?'gray':r.status==='In Repair'?'blue':'amber';return `<tr><td><b>${r.job}</b></td><td>${esc(c)}<br><small>${esc(r.bike)} ${r.plate?'· '+esc(r.plate):''}</small></td><td>${esc(r.mechanic||'—')}</td><td>${money(total)}</td><td><span class="badge ${cl}">${r.status}</span></td><td>${new Date(r.date).toLocaleDateString()}</td><td><button class="btn sm" onclick="openModal('Repair Job '+r.job,repairForm(${r.id}))">Edit</button> <button class="btn sm" onclick="printRepair(${r.id})">🖨</button></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No repair jobs found.</div>'
-}
-function openSupplier(id=null){const s=id?db.suppliers.find(x=>x.id==id):{name:'',phone:''};openModal(id?'Edit Supplier':'Add Supplier',`<div class="formgrid"><div class="field"><label>Supplier Name</label><input id="mName" value="${esc(s.name)}"></div><div class="field"><label>Phone</label><input id="mPhone" value="${esc(s.phone)}"></div></div><div class="form-actions"><button class="btn primary" onclick="saveSupplier(${id||0})">Save Supplier</button></div>`)}
-function saveSupplier(id){const name=mName.value.trim();if(!name)return toast('Enter supplier name');if(id)Object.assign(db.suppliers.find(s=>s.id==id),{name,phone:mPhone.value.trim()});else db.suppliers.push({id:db.counters.supplier++,name,phone:mPhone.value.trim()});persist();closeModal();toast('Supplier saved')}
-function renderSuppliers(){suppliersTable.innerHTML=db.suppliers.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Supplier</th><th>Phone</th><th>Purchases</th><th>Outstanding</th><th></th></tr></thead><tbody>${db.suppliers.map(s=>{const total=db.purchases.filter(p=>p.supplier===s.name).reduce((a,p)=>a+p.total,0);return `<tr><td><b>${esc(s.name)}</b></td><td>${esc(s.phone||'—')}</td><td>${money(total)}</td><td>${money(supplierBalance(s.name))}</td><td><button class="btn sm" onclick="openSupplier(${s.id})">Edit</button></td></tr>`}).join('')}</tbody></table></div>`:'<div class="empty">No suppliers yet.</div>'}
-function renderLedger(){const id=+ledgerCustomer?.value;if(!id){ledgerBox.innerHTML='<div class="empty">Select a customer.</div>';return}const rows=[];db.sales.filter(s=>s.customerId===id).forEach(s=>rows.push({date:s.date,type:'Sale',debit:s.total,credit:s.paid,ref:s.invoice}));db.payments.filter(p=>p.customerId===id).forEach(p=>rows.push({date:p.date,type:'Payment',debit:0,credit:p.amount,ref:'Payment'}));rows.sort((a,b)=>new Date(a.date)-new Date(b.date));let bal=0;ledgerBox.innerHTML=`<div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Ref</th><th>Debit</th><th>Credit</th><th>Balance</th></tr></thead><tbody>${rows.map(x=>{bal+=x.debit-x.credit;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.type} · ${x.ref}</td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(Math.max(0,bal))}</td></tr>`}).join('')||'<tr><td colspan="5">No transactions</td></tr>'}</tbody></table></div><div class="mini" style="margin-top:10px"><span>Current Outstanding</span><b>${money(customerBalance(id))}</b></div>`}
-function renderSupplierLedger(){const name=db.suppliers.find(s=>s.id===(+ledgerSupplier?.value))?.name;if(!name){supplierLedgerBox.innerHTML='<div class="empty">Select a supplier.</div>';return}let bal=0;const rows=db.purchases.filter(p=>p.supplier===name).sort((a,b)=>new Date(a.date)-new Date(b.date));supplierLedgerBox.innerHTML=`<div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Invoice</th><th>Debit</th><th>Paid</th><th>Balance</th></tr></thead><tbody>${rows.map(x=>{bal+=x.balance;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.invoice}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(Math.max(0,bal))}</td></tr>`}).join('')||'<tr><td colspan="5">No transactions</td></tr>'}</tbody></table></div>`}
-function renderReports(){const sales=db.sales.reduce((a,x)=>a+x.total,0),profit=db.sales.reduce((a,s)=>a+s.items.reduce((z,i)=>z+(i.rate-(i.cost||0))*i.qty-i.discount,0),0),purchases=db.purchases.reduce((a,x)=>a+x.total,0),rec=db.customers.reduce((a,c)=>a+customerBalance(c.id),0);repSales.textContent=money(sales);repProfit.textContent=money(profit);repPurchases.textContent=money(purchases);repReceivable.textContent=money(rec);
- const map={};db.sales.forEach(s=>s.items.forEach(i=>map[i.productId]=(map[i.productId]||0)+i.qty));const top=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,8);productReport.innerHTML=top.map(([id,q])=>{const p=db.products.find(x=>x.id==id);return `<div style="margin:12px 0"><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:800"><span>${esc(p?.name||'')}</span><span>${q} units</span></div><div class="progress"><i style="width:${Math.min(100,q*5)}%"></i></div></div>`}).join('')||'<div class="empty">No sales data.</div>';repairReport.innerHTML=`<div class="mini"><span>Total repair revenue</span><b>${money(db.repairs.reduce((a,r)=>a+r.partsCost+r.labor,0))}</b></div><div class="mini" style="margin-top:8px"><span>Delivered jobs</span><b>${db.repairs.filter(r=>r.status==='Delivered').length}</b></div>`}
-function renderSettings(){shopName.value=db.settings.shopName||'';shopPhone.value=db.settings.phone||'';shopCurrency.value=db.settings.currency||'Rs';invoiceFooter.value=db.settings.invoiceFooter||''}
-function saveSettings(){db.settings={shopName:shopName.value.trim()||'BikePro Accessories & Workshop',phone:shopPhone.value.trim(),currency:shopCurrency.value.trim()||'Rs',invoiceFooter:invoiceFooter.value.trim()};persist();toast('Settings saved')}
-function exportBackup(){const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='BikePro_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);toast('Backup exported')}
-function restoreBackup(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{db=mergeDB(JSON.parse(r.result));persist();toast('Backup restored')}catch(err){toast('Invalid backup file')}};r.readAsText(f);e.target.value=''}
-function resetDemo(){if(!confirm('Reset this browser database to the demo data?'))return;db=structuredClone(defaultDB);persist();toast('Demo data restored')}
-function addPayment(customerId){const amount=+prompt('Payment amount:','0');if(!amount||amount<0)return;db.payments.unshift({id:uid(),date:new Date().toISOString(),customerId,amount});persist();toast('Payment recorded')}
-function printWindow(title,body){
- const w=window.open('','_blank');
- if(!w)return;
- const safeTitle=esc(title);
- const html='<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>'+safeTitle+'</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:30px auto;color:#111;padding:0 16px}h1{margin:0 0 4px}small{color:#666}table{width:100%;border-collapse:collapse;margin-top:22px}th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}.right{text-align:right}.total{font-weight:700;font-size:16px}.head{display:flex;justify-content:space-between;gap:20px}.footer{margin-top:35px;color:#666;font-size:12px}</style></head><body>'+body+'</body></html>';
- w.document.open();w.document.write(html);w.document.close();
- setTimeout(()=>{try{w.focus();w.print()}catch(e){}},250);
+function renderPurchases(){
+ let el=document.getElementById('purchaseList'); if(!el)return;
+ el.innerHTML=(db.purchases||[]).slice(0,15).map(x=>`<div class="item"><b>${x.invoice} • ${db.products.find(p=>p.id==x.productId)?.name||''} • ${money(x.total)}</b><small>${x.supplier||'Supplier'} • Qty ${x.qty} • Balance ${money(x.balance)}</small><br><button class="secondary" onclick='printPurchase(${JSON.stringify(x)})'>🖨 Print</button></div>`).join('')||'<div class="muted">No purchases yet.</div>';
 }
 
-// BikePro ERP — Supabase Cloud Layer
-const SUPABASE_URL='https://vchkrwadfykredtcsxrb.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let cloudUser=null, cloudShopId=null, cloudEnabled=false, authSignup=false, cloudBusy=false;
-const originalPersist=persist;
-function setCloudStatus(text,online=false){const e=document.getElementById('cloudStatus');if(e){e.textContent='● '+text;e.className='cloud-pill '+(online?'online':'offline')}document.getElementById('cloudSignOut').style.display=online?'inline-flex':'none'}
-function useOffline(){cloudEnabled=false;document.getElementById('authOverlay').style.display='none';setCloudStatus('Offline');refresh()}
-function toggleAuth(){authSignup=!authSignup;authModeText.textContent=authSignup?'Create your shop cloud account':'Sign in to your cloud database';authBtn.textContent=authSignup?'Create Account':'Sign In';authToggle.textContent=authSignup?'Already have an account':'Create account';document.getElementById('shopField').style.display=authSignup?'block':'none';authError.textContent=''}
-async function authSubmit(){
- authError.textContent='';const email=authEmail.value.trim(),password=authPassword.value;
- if(!email||password.length<6){authError.textContent='Enter a valid email and a password of at least 6 characters.';return}
- authBtn.disabled=true;
- try{
-  if(authSignup){
-   const shopName=authShop.value.trim()||'BikePro Accessories & Workshop';
-   const {data,error}=await sb.auth.signUp({email,password,options:{data:{shop_name:shopName}}});
-   if(error)throw error;
-   if(data.session){await enterCloud(data.session.user)}else{authError.style.color='#166534';authError.textContent='Account created. Check your email, then sign in.';toggleAuth()}
-  }else{
-   const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)throw error;if(data.session)await enterCloud(data.session.user)
-  }
- }catch(e){authError.style.color='#b91c1c';authError.textContent=e.message||'Authentication failed'}finally{authBtn.disabled=false}
+
+function addSupplier(){
+ let n=supplierName.value.trim(); if(!n)return toast('Enter supplier name');
+ db.suppliers=db.suppliers||[]; if(!db.suppliers.some(x=>x.name.toLowerCase()==n.toLowerCase()))db.suppliers.push({id:Date.now(),name:n});
+ supplierName.value='';save();toast('Supplier added');
 }
-async function enterCloud(user){
- cloudUser=user;const {data:profile,error}=await sb.from('profiles').select('shop_id').eq('id',user.id).single();
- if(error||!profile){authError.textContent='Shop profile not found. Run the supplied Supabase SQL setup first.';return}
- cloudShopId=profile.shop_id;cloudEnabled=true;document.getElementById('authOverlay').style.display='none';setCloudStatus('Cloud Connected',true);await loadCloud();
+function printInvoice(x){
+ let c=db.customers.find(c=>c.id==x.customerId)?.name||'',p=db.products.find(p=>p.id==x.productId)?.name||'';
+ let w=window.open('','_blank'); if(!w)return;
+ w.document.write('<!doctype html><html><head><title>'+x.invoice+'</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}.tot{text-align:right;font-weight:bold}</style></head><body><h1>BikePro Accessories</h1><div>Invoice: <b>'+x.invoice+'</b></div><div>Customer: '+c+'</div><div>Date: '+new Date(x.date).toLocaleString()+'</div><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>'+p+'</td><td>'+x.qty+'</td><td>Rs '+Number(x.rate).toLocaleString()+'</td><td>Rs '+Number(x.total).toLocaleString()+'</td></tr></table><p class="tot">Discount: Rs '+Number(x.discount||0).toLocaleString()+'</p><p class="tot">Grand Total: Rs '+Number(x.total).toLocaleString()+'</p><p class="tot">Paid: Rs '+Number(x.paid||0).toLocaleString()+'</p><p class="tot">Balance: Rs '+Number(x.balance||0).toLocaleString()+'</p></body></html>');
+ w.document.close();w.focus();setTimeout(()=>w.print(),250);
 }
-async function signOut(){await sb.auth.signOut();cloudEnabled=false;cloudUser=null;cloudShopId=null;setCloudStatus('Offline');document.getElementById('authOverlay').style.display='flex';document.getElementById('cloudSignOut').style.display='none'}
-async function loadCloud(){
- if(!cloudShopId)return;
- setCloudStatus('Syncing…',true);
- const {data,error}=await sb.from('shop_data').select('data').eq('shop_id',cloudShopId).single();
- if(error&&error.code!=='PGRST116'){toast('Cloud load failed: '+error.message);setCloudStatus('Cloud Error');return}
- if(data?.data){db=mergeDB(data.data);localStorage.setItem(KEY,JSON.stringify(db));refresh()}
- else await syncCloud(true);
- setCloudStatus('Cloud Connected',true);
+function printPurchase(x){
+ let p=db.products.find(p=>p.id==x.productId)?.name||'',w=window.open('','_blank');if(!w)return;
+ w.document.write('<!doctype html><html><head><title>'+x.invoice+'</title><style>body{font-family:Arial;max-width:700px;margin:30px auto}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #ddd;text-align:left}</style></head><body><h1>BikePro Accessories - Purchase</h1><p>Invoice: <b>'+x.invoice+'</b><br>Supplier: '+(x.supplier||'')+'<br>Date: '+new Date(x.date).toLocaleString()+'</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>'+p+'</td><td>'+x.qty+'</td><td>Rs '+Number(x.rate).toLocaleString()+'</td><td>Rs '+Number(x.total).toLocaleString()+'</td></tr></table><p>Paid: Rs '+Number(x.paid||0).toLocaleString()+'</p><p>Balance: Rs '+Number(x.balance||0).toLocaleString()+'</p></body></html>');
+ w.document.close();w.focus();setTimeout(()=>w.print(),250);
 }
-async function syncCloud(silent=false){
- if(!cloudEnabled||!cloudShopId||cloudBusy)return;cloudBusy=true;
- try{const {error}=await sb.from('shop_data').upsert({shop_id:cloudShopId,data:db,updated_at:new Date().toISOString()},{onConflict:'shop_id'});if(error)throw error;if(!silent)setCloudStatus('Cloud Saved',true)}catch(e){setCloudStatus('Sync Error');if(!silent)toast('Cloud sync failed: '+e.message)}finally{cloudBusy=false}}
-persist=function(){localStorage.setItem(KEY,JSON.stringify(db));refresh();syncCloud()};
-sb.auth.getSession().then(async({data})=>{if(data.session)await enterCloud(data.session.user);else{document.getElementById('authOverlay').style.display='flex';setCloudStatus('Sign in for Cloud')}});
-sb.auth.onAuthStateChange((_event,session)=>{if(session&&!cloudEnabled)enterCloud(session.user)});
-function printInvoice(id){const x=typeof id==='object'?id:db.sales.find(s=>s.id==id);if(!x)return;const c=db.customers.find(c=>c.id==x.customerId)?.name||'';const items=x.items.map(i=>{const p=db.products.find(p=>p.id==i.productId);return `<tr><td>${esc(p?.name||'')}</td><td>${i.qty}</td><td>${money(i.rate)}</td><td>${money(i.qty*i.rate-i.discount)}</td></tr>`}).join('');printWindow(x.invoice,`<div class="head"><div><h1>${esc(db.settings.shopName)}</h1><small>${esc(db.settings.phone||'')}</small></div><div><b>Invoice ${esc(x.invoice)}</b><br><small>${new Date(x.date).toLocaleString()}</small></div></div><p>Customer: <b>${esc(c)}</b></p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr>${items}</table><p class="right">Grand Total: <b>${money(x.total)}</b><br>Paid: ${money(x.paid)}<br>Balance: ${money(x.balance)}</p><div class="footer">${esc(db.settings.invoiceFooter||'')}</div>`)}
-function printPurchase(id){const x=db.purchases.find(p=>p.id==id);if(!x)return;const p=db.products.find(p=>p.id==x.productId);printWindow(x.invoice,`<h1>${esc(db.settings.shopName)}</h1><p><b>Purchase ${x.invoice}</b><br>Supplier: ${esc(x.supplier)}<br>Date: ${new Date(x.date).toLocaleString()}</p><table><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Total</th></tr><tr><td>${esc(p?.name||'')}</td><td>${x.qty}</td><td>${money(x.rate)}</td><td>${money(x.total)}</td></tr></table><p class="right">Paid: ${money(x.paid)}<br>Balance: ${money(x.balance)}</p>`)}
-function printRepair(id){const r=db.repairs.find(x=>x.id==id);if(!r)return;const c=db.customers.find(c=>c.id==r.customerId)?.name||'';printWindow(r.job,`<h1>${esc(db.settings.shopName)}</h1><p><b>Repair Job ${r.job}</b><br>Customer: ${esc(c)}<br>Bike: ${esc(r.bike)} ${r.plate?'· '+esc(r.plate):''}<br>Mechanic: ${esc(r.mechanic||'—')}<br>Status: ${esc(r.status)}<br>Date: ${new Date(r.date).toLocaleString()}</p><table><tr><th>Complaint</th><th>Diagnosis</th></tr><tr><td>${esc(r.complaint||'')}</td><td>${esc(r.diagnosis||'')}</td></tr></table><p>Parts: ${esc(r.parts||'—')}<br>Parts Cost: ${money(r.partsCost)}<br>Labor: ${money(r.labor)}<br><b>Total: ${money(r.partsCost+r.labor)}</b></p><div class="footer">${esc(r.notes||'')}</div>`)}
+function renderSupplierLedger(){
+ let n=document.getElementById('supplierLedger')?.value,rows=(db.purchases||[]).filter(x=>x.supplier==n),bal=0;
+ let body=rows.map(x=>{bal+=x.balance;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.invoice}</td><td>${money(x.total)}</td><td>${money(x.paid)}</td><td>${money(x.balance)}</td></tr>`}).join('');
+ document.getElementById('supplierLedgerBox').innerHTML=`<table><tr><th>Date</th><th>Invoice</th><th>Debit</th><th>Paid</th><th>Balance</th></tr>${body||'<tr><td colspan="5">No transactions</td></tr>'}</table>`;
+}
+function renderReports(){
+ let sales=db.sales.reduce((a,x)=>a+x.total,0);
+ let profit=db.sales.reduce((a,x)=>a+((x.rate-(x.cost||0))*x.qty-x.discount),0);
+ let stock=db.products.reduce((a,x)=>a+(x.cost||0)*x.stock,0);
+ let rec=db.sales.reduce((a,x)=>a+x.balance,0)-db.payments.reduce((a,x)=>a+x.amount,0);
+ reportSales.textContent=money(sales);reportProfit.textContent=money(profit);reportStock.textContent=money(stock);reportReceivable.textContent=money(Math.max(0,rec));
+}
+function exportBackup(){
+ let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='BikePro_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href);toast('Backup downloaded');
+}
+function restoreBackup(e){
+ let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.customers||!x.products)throw Error();db=x;save();toast('Backup restored')}catch(_){toast('Invalid backup file')}};r.readAsText(f);
+}
+function updateInvoiceLabels(){if(document.getElementById('saleNo'))saleNo.textContent='INV-'+db.settings.nextSale;if(document.getElementById('purchaseNo'))purchaseNo.textContent='PUR-'+db.settings.nextPurchase}
+
+function renderRecent(){recentSales.innerHTML=db.sales.slice(0,6).map(s=>{let c=db.customers.find(x=>x.id==s.customerId)?.name||'';let p=db.products.find(x=>x.id==s.productId)?.name||'';return `<div class="item"><b>${s.invoice||'INV'} • ${p} • ${money(s.total)}</b><small>${c} • Balance ${money(s.balance)} • ${new Date(s.date).toLocaleString()}</small><br><button class="secondary" onclick='printInvoice(${JSON.stringify(s)})'>🖨 Print Invoice</button></div>`}).join('')||'<div class="muted">No sales yet.</div>'}
+function renderCustomers(){customerList.innerHTML=db.customers.map(c=>{let bal=db.sales.filter(s=>s.customerId==c.id).reduce((a,s)=>a+s.balance,0)-db.payments.filter(p=>p.customerId==c.id).reduce((a,p)=>a+p.amount,0);return `<div class="item"><b>${c.name}</b><small>${c.phone||'No phone'} • Balance: ${money(Math.max(0,bal))}</small></div>`}).join('')}
+function renderProducts(){productList.innerHTML=db.products.map(p=>`<div class="item"><b>${p.name}</b><small>${p.cat||'General'} • Rate ${money(p.rate)} • Stock ${p.stock}</small></div>`).join('')}
+function renderPayments(){paymentList.innerHTML=db.payments.slice(0,15).map(p=>`<div class="item"><b>${db.customers.find(c=>c.id==p.customerId)?.name}</b><small>Payment ${money(p.amount)} • ${new Date(p.date).toLocaleString()}</small></div>`).join('')||'<div class="muted">No payments yet.</div>'}
+function renderLedger(){let c=+ledgerCustomer?.value;if(!c)return;let rows=[];db.sales.filter(s=>s.customerId==c).forEach(s=>rows.push({date:s.date,type:'Sale',debit:s.total,credit:s.paid,ref:db.products.find(p=>p.id==s.productId)?.name||''}));db.payments.filter(p=>p.customerId==c).forEach(p=>rows.push({date:p.date,type:'Payment',debit:0,credit:p.amount,ref:'Customer payment'}));rows.sort((a,b)=>new Date(a.date)-new Date(b.date));let bal=0;let body=rows.map(x=>{bal+=x.debit-x.credit;return `<tr><td>${new Date(x.date).toLocaleDateString()}</td><td>${x.type}<br><small>${x.ref}</small></td><td>${money(x.debit)}</td><td>${money(x.credit)}</td><td>${money(bal)}</td></tr>`}).join('');ledgerBox.innerHTML=`<table><tr><th>Date</th><th>Transaction</th><th>Debit</th><th>Credit</th><th>Balance</th></tr>${body}</table>`}
 refresh();
 </script>
-</body>
-</html>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://vchkrwadfykredtcsxrb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Lw54usjiRBiHufeXt5JhBQ_0rdjmE8Y';
+let supa = null, authSignup=false, currentUser=null, shopId=null;
+
+function cloudReady(){return SUPABASE_URL.startsWith('http') && !SUPABASE_URL.includes('YOUR_') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('YOUR_')}
+
+async function initCloud(){
+ if(!cloudReady()){ document.getElementById('authOverlay').style.display='none'; return; }
+ supa=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data}=await supa.auth.getSession();
+ if(data.session) await enterCloud(data.session.user); else document.getElementById('authOverlay').style.display='flex';
+ supa.auth.onAuthStateChange(async (_e,session)=>{ if(session) await enterCloud(session.user); });
+}
+function toggleAuth(){
+ authSignup=!authSignup;
+ authModeText.textContent=authSignup?'Create your shop owner account':'Sign in to your shop';
+ authShop.style.display=authSignup?'block':'none';
+ authBtn.textContent=authSignup?'Create Account':'Sign In';
+ authToggle.textContent=authSignup?'Already have an account':'Create account';
+ authError.textContent='';
+}
+async function authSubmit(){
+ authError.textContent='';
+ if(!supa){authError.textContent='Cloud is not configured yet. Add Supabase URL/key in this file.';return;}
+ let email=authEmail.value.trim(),pw=authPassword.value;
+ if(!email||pw.length<6){authError.textContent='Enter email and a password of at least 6 characters.';return;}
+ if(authSignup){
+   let {data,error}=await supa.auth.signUp({email,password:pw});
+   if(error){authError.textContent=error.message;return;}
+   if(data.user){
+     let shop=(authShop.value.trim()||'My Bike Shop');
+     let {data:sh,error:se}=await supa.from('shops').insert({name:shop,owner_id:data.user.id}).select().single();
+     if(se){authError.textContent=se.message;return;}
+     shopId=sh.id; await supa.from('profiles').upsert({id:data.user.id,shop_id:shopId,role:'owner'});
+     authError.style.color='#166534';authError.textContent='Account created. Check email if confirmation is enabled.';
+   }
+ } else {
+   let {data,error}=await supa.auth.signInWithPassword({email,password:pw});
+   if(error)authError.textContent=error.message; else if(data.session)await enterCloud(data.session.user);
+ }
+}
+async function enterCloud(user){
+ currentUser=user;
+ let {data:profile}=await supa.from('profiles').select('shop_id,role').eq('id',user.id).single();
+ if(!profile){document.getElementById('authError').textContent='Profile not found. Run the supplied SQL setup first.';return;}
+ shopId=profile.shop_id;
+ authOverlay.style.display='none';userbar.style.display='flex';userEmail.textContent=user.email+' • '+profile.role;
+ await loadCloud();
+}
+async function signOut(){if(supa)await supa.auth.signOut();location.reload()}
+
+async function loadCloud(){
+ let [cs,ps,ss,pays,purs]=await Promise.all([
+  supa.from('customers').select('*').order('created_at'),
+  supa.from('products').select('*').order('created_at'),
+  supa.from('sales').select('*').order('created_at',{ascending:false}),
+  supa.from('payments').select('*').order('created_at',{ascending:false}),
+  supa.from('purchases').select('*').order('created_at',{ascending:false})
+ ]);
+ db.customers=(cs.data||[]).map(x=>({id:x.id,name:x.name,phone:x.phone||''}));
+ db.products=(ps.data||[]).map(x=>({id:x.id,name:x.name,cat:x.category||'General',brand:x.brand||'',cost:Number(x.cost||0),rate:Number(x.sale_price||0),stock:Number(x.stock||0)}));
+ db.sales=(ss.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,customerId:x.customer_id,productId:x.product_id,qty:x.qty,rate:Number(x.rate),cost:Number(x.cost||0),discount:Number(x.discount||0),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ db.payments=(pays.data||[]).map(x=>({id:x.id,date:x.created_at,customerId:x.customer_id,amount:Number(x.amount)}));
+ db.purchases=(purs.data||[]).map(x=>({id:x.id,invoice:x.invoice_no,date:x.created_at,supplier:x.supplier,productId:x.product_id,qty:x.qty,rate:Number(x.rate),total:Number(x.total),paid:Number(x.paid||0),balance:Number(x.balance||0)}));
+ refresh();
+}
+
+async function cloudSaveCustomer(obj){
+ let {error}=await supa.from('customers').insert({shop_id:shopId,name:obj.name,phone:obj.phone||''});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveProduct(obj){
+ let {error}=await supa.from('products').insert({shop_id:shopId,name:obj.name,category:obj.cat,brand:obj.brand,cost:obj.cost,sale_price:obj.rate,stock:obj.stock});
+ if(error)toast(error.message);else await loadCloud();
+}
+async function cloudSaveSale(x,p){
+ let {error}=await supa.from('sales').insert({shop_id:shopId,invoice_no:x.invoice,customer_id:x.customerId,product_id:x.productId,qty:x.qty,rate:x.rate,cost:x.cost,discount:x.discount,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false}
+ return true;
+}
+async function cloudSavePayment(x){
+ let {error}=await supa.from('payments').insert({shop_id:shopId,customer_id:x.customerId,amount:x.amount});
+ if(error){toast(error.message);return false} return true;
+}
+async function cloudSavePurchase(x,p){
+ let {error}=await supa.from('purchases').insert({shop_id:shopId,invoice_no:x.invoice,supplier:x.supplier,product_id:x.productId,qty:x.qty,rate:x.rate,total:x.total,paid:x.paid,balance:x.balance});
+ if(error){toast(error.message);return false}
+ let {error:pe}=await supa.from('products').update({stock:p.stock,cost:p.cost}).eq('id',p.id).eq('shop_id',shopId);
+ if(pe){toast(pe.message);return false} return true;
+}
+</script>
+
+<script>
+const localAddCustomer=addCustomer, localAddProduct=addProduct, localSaveSale=saveSale, localSavePayment=savePayment, localSavePurchase=savePurchase;
+addCustomer=async function(){let n=custName.value.trim();if(!n)return toast('Enter customer name');let o={name:n,phone:custPhone.value};if(cloudReady()&&supa&&shopId){await cloudSaveCustomer(o);custName.value='';custPhone.value='';toast('Customer saved to cloud')}else localAddCustomer();}
+addProduct=async function(){let n=prodName.value.trim(),r=+prodRate.value,s=+prodStock.value,c=+prodCost.value||0;if(!n)return toast('Enter product');let o={name:n,cat:prodCategory.value||'General',brand:prodBrand.value||'',cost:c,rate:r,stock:s};if(cloudReady()&&supa&&shopId){await cloudSaveProduct(o);prodName.value='';prodCategory.value='';prodBrand.value='';prodCost.value='';prodRate.value='';prodStock.value='';toast('Product saved to cloud')}else localAddProduct();}
+saveSale=async function(){
+ let c=+saleCustomer.value,pid=+saleProduct.value,q=+qty.value,r=+rate.value,d=+discount.value||0,paidv=+paid.value||0,p=db.products.find(x=>x.id==pid),t=Math.max(0,q*r-d);
+ if(!p||q<1||q>p.stock)return toast('Check product/quantity');
+ let invoice='INV-'+(db.sales.length+1001),x={id:Date.now(),invoice,date:new Date().toISOString(),customerId:c,productId:pid,qty:q,rate:r,cost:p.cost||0,discount:d,total:t,paid:Math.min(paidv,t),balance:Math.max(0,t-paidv)};
+ p.stock-=q;
+ if(cloudReady()&&supa&&shopId){if(await cloudSaveSale(x,p)){await loadCloud();toast(invoice+' saved to cloud');printInvoice(x);show('dashboard')}}else localSaveSale();
+}
+savePayment=async function(){let c=+payCustomer.value,a=+payAmount.value;if(!a)return toast('Enter amount');let x={customerId:c,amount:a};if(cloudReady()&&supa&&shopId){if(await cloudSavePayment(x)){payAmount.value='';await loadCloud();toast('Payment saved to cloud')}}else localSavePayment();}
+savePurchase=async function(){
+ let pid=+purchaseProduct.value,q=+purchaseQty.value,r=+purchaseRate.value,paidv=+purchasePaid.value||0,p=db.products.find(x=>x.id==pid),sn=supplier.value.trim();
+ if(!p||q<1||r<0||!sn)return toast('Enter supplier/product details');
+ let x={id:Date.now(),invoice:'PUR-'+(db.purchases.length+5001),date:new Date().toISOString(),supplier:sn,productId:pid,qty:q,rate:r,total:q*r,paid:Math.min(paidv,q*r),balance:Math.max(0,q*r-paidv)};p.stock+=q;p.cost=r;
+ if(cloudReady()&&supa&&shopId){if(await cloudSavePurchase(x,p)){await loadCloud();toast(x.invoice+' saved to cloud');printPurchase(x)}}else localSavePurchase();
+}
+window.addEventListener('load',initCloud);
+</script>
+</body></html>
