@@ -1,9 +1,43 @@
 {
   "name": "BikePro ERP",
-  "short_name": "BikePro",
-  "start_url": "./",
+  "short_name": "BikePro ERP",
+  "description": "BikePro ERP - Sales, Inventory, Customers and Business Management System",
+  "id": "/bikepro-erp/",
+  "start_url": "/bikepro-erp/",
+  "scope": "/bikepro-erp/",
   "display": "standalone",
-  "background_color": "#f4f7fb",
-  "theme_color": "#0f172a",
-  "description": "Bike shop, accessories and workshop ERP"
+  "orientation": "portrait",
+  "theme_color": "#111827",
+  "background_color": "#ffffff",
+  "categories": [
+    "business",
+    "productivity",
+    "finance"
+  ],
+  "icons": [
+    {
+      "src": "/bikepro-erp/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bikepro-erp/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bikepro-erp/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/bikepro-erp/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
 }
